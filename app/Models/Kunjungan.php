@@ -22,4 +22,9 @@ class Kunjungan extends Model
     {
         return $this->belongsTo(Obat::class);
     }
+
+    public function siswa()
+    {
+        return $this->belongsTo(Siswa::class, 'siswa_id');
+    }
 }

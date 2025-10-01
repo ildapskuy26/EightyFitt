@@ -14,10 +14,11 @@ return new class extends Migration
         Schema::create('obat', function (Blueprint $table) {
             $table->id();
             $table->string('nama', 100);
-            $table->string('jenis_obat', 50)->nullable();
-            $table->string('bentuk_obat', 50)->nullable();
+            $table->string('jenis_obat', 50)->nullable(false); // kalau wajib isi
+            $table->string('bentuk_obat', 50)->nullable(false);
             $table->string('kategori_dosis', 50)->nullable();
             $table->unsignedInteger('stock')->default(0);
+            $table->unsignedTinyInteger('dosis_per_hari')->default(1);
             $table->timestamps();
         });
     }

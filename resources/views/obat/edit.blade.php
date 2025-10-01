@@ -4,33 +4,59 @@
 <div class="container">
     <h2>Edit Obat</h2>
 
+    {{-- tampilkan error validasi jika ada --}}
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
     <form action="{{ route('obat.update', $obat->id) }}" method="POST">
         @csrf
         @method('PUT')
 
         <div class="mb-3">
             <label class="form-label">Nama Obat</label>
-            <input type="text" name="nama" class="form-control" value="{{ old('nama', $obat->nama) }}" required>
+            <input type="text" name="nama" class="form-control"
+                   value="{{ old('nama', $obat->nama) }}" required>
         </div>
 
         <div class="mb-3">
             <label class="form-label">Jenis</label>
-            <input type="text" name="jenis" class="form-control" value="{{ old('jenis', $obat->jenis) }}">
+            <select name="jenis_obat" class="form-control" required>
+                <option value="">- Pilih Jenis -</option>
+                <option value="Antibiotik" {{ old('jenis_obat', $obat->jenis_obat) == 'Antibiotik' ? 'selected' : '' }}>Antibiotik</option>
+                <option value="Analgesik" {{ old('jenis_obat', $obat->jenis_obat) == 'Analgesik' ? 'selected' : '' }}>Analgesik</option>
+                <option value="Antipiretik" {{ old('jenis_obat', $obat->jenis_obat) == 'Antipiretik' ? 'selected' : '' }}>Antipiretik</option>
+                <!-- Tambahkan jenis lain sesuai kebutuhan -->
+            </select>
         </div>
 
         <div class="mb-3">
             <label class="form-label">Bentuk</label>
-            <input type="text" name="bentuk" class="form-control" value="{{ old('bentuk', $obat->bentuk) }}">
+            <select name="bentuk_obat" class="form-control" required>
+                <option value="">- Pilih Bentuk -</option>
+                <option value="Tablet" {{ old('bentuk_obat', $obat->bentuk_obat) == 'Tablet' ? 'selected' : '' }}>Tablet</option>
+                <option value="Sirup" {{ old('bentuk_obat', $obat->bentuk_obat) == 'Sirup' ? 'selected' : '' }}>Sirup</option>
+                <option value="Kapsul" {{ old('bentuk_obat', $obat->bentuk_obat) == 'Kapsul' ? 'selected' : '' }}>Kapsul</option>
+                <!-- Tambahkan bentuk lain sesuai kebutuhan -->
+            </select>
         </div>
 
         <div class="mb-3">
-            <label class="form-label">Kategori / Dosis</label>
-            <input type="text" name="kategori_dosis" class="form-control" value="{{ old('kategori_dosis', $obat->kategori_dosis) }}">
+            <label class="form-label">Dosis/Hari</label>
+            <input type="number" name="dosis_per_hari" class="form-control"
+                   value="{{ old('dosis_per_hari', $obat->dosis_per_hari ?? 1) }}" min="1" required>
         </div>
 
         <div class="mb-3">
             <label class="form-label">Stock</label>
-            <input type="number" name="stock" class="form-control" value="{{ old('stock', $obat->stock) }}" min="0" required>
+            <input type="number" name="stock" class="form-control"
+                   value="{{ old('stock', $obat->stock) }}" min="0" required>
         </div>
 
         <button type="submit" class="btn btn-primary">Update</button>

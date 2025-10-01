@@ -17,6 +17,6 @@ class Siswa extends Model
 
     public function kunjungan()
     {
-        return $this->hasMany(Kunjungan::class, 'nis', 'nis');
+        return $this->hasMany(Kunjungan::class, 'nis', 'nama');
     }
 }

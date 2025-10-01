@@ -12,7 +12,7 @@ class Obat extends Model
     protected $table = 'obat';
 
     protected $fillable = [
-        'nama', 'jenis', 'bentuk', 'kategori_dosis', 'stock'
+        'nama', 'jenis_obat', 'bentuk_obat', 'kategori_dosis', 'stock', 'dosis_per_hari'
     ];
 
     // Relasi ke Kunjungan

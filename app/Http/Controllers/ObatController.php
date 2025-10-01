@@ -7,10 +7,10 @@ use Illuminate\Http\Request;
 
 class ObatController extends Controller
 {
-    // Middleware auth & role
     public function __construct()
     {
-        $this->middleware(['auth','role:admin,petugas']);
+        $this->middleware(['auth','role:admin|petugas'])
+        ->except(['index']);
     }
 
     // List semua obat
@@ -20,7 +20,7 @@ class ObatController extends Controller
         return view('obat.index', compact('obat'));
     }
 
-    // Form tambah obat
+    // Form tambah
     public function create()
     {
         return view('obat.create');
@@ -30,43 +30,58 @@ class ObatController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nama' => 'required|string|max:255',
-            'jenis' => 'nullable|string|max:100',
-            'bentuk' => 'nullable|string|max:100',
-            'kategori_dosis' => 'nullable|string|max:100',
-            'stock' => 'required|integer|min:0',
+            'nama'          => 'required|string|max:255',
+            'jenis_obat'    => 'required|string|max:100',
+            'bentuk_obat'   => 'required|string|max:100',
+            'kategori_dosis'=> 'nullable|string|max:100',
+            'dosis_per_hari'=> 'required|integer|min:1',
+            'stock'         => 'required|integer|min:0',
         ]);
 
-        Obat::create($request->all());
+        Obat::create([
+            'nama'          => $request->nama,
+            'jenis_obat'    => $request->jenis_obat,
+            'bentuk_obat'   => $request->bentuk_obat,
+            'kategori_dosis'=> $request->kategori_dosis,
+            'dosis_per_hari'=> $request->dosis_per_hari,
+            'stock'         => $request->stock,
+        ]);
 
         return redirect()->route('obat.index')->with('success','Obat berhasil ditambahkan.');
     }
 
-    // Form edit obat
+    // Form edit
     public function edit(Obat $obat)
     {
         return view('obat.edit', compact('obat'));
     }
 
-    // Detail obat
-public function show(Obat $obat)
-{
-    return view('obat.show', compact('obat'));
-}
-
+    // Detail
+    public function show(Obat $obat)
+    {
+        return view('obat.show', compact('obat'));
+    }
 
     // Update obat
     public function update(Request $request, Obat $obat)
     {
         $request->validate([
-            'nama' => 'required|string|max:255',
-            'jenis' => 'nullable|string|max:100',
-            'bentuk' => 'nullable|string|max:100',
-            'kategori_dosis' => 'nullable|string|max:100',
-            'stock' => 'required|integer|min:0',
+            'nama'          => 'required|string|max:255',
+            'jenis_obat'    => 'required|string|max:100',
+            'bentuk_obat'   => 'required|string|max:100',
+            'kategori_dosis'=> 'nullable|string|max:100',
+            'dosis_per_hari'=> 'required|integer|min:1',
+            'stock'         => 'required|integer|min:0',
         ]);
 
-        $obat->update($request->all());
+        $obat->update([
+            'nama'          => $request->nama,
+            'jenis_obat'    => $request->jenis_obat,   // ✅ fix mapping
+            'bentuk_obat'   => $request->bentuk_obat, // ✅ fix mapping
+            'kategori_dosis'=> $request->kategori_dosis,
+            'dosis_per_hari'=> $request->dosis_per_hari,
+            'stock'         => $request->stock,
+        ]);
 
         return redirect()->route('obat.index')->with('success','Obat berhasil diupdate.');
     }

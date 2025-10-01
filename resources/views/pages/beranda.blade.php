@@ -1,35 +1,38 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UKS App</title>
-    @vite('resources/css/app.css')
-</head>
-<body class="bg-gray-100">
-    <!-- Navbar -->
-    <nav class="bg-white shadow p-4 flex justify-between">
-        <div>
-            <a href="{{ url('/') }}" class="mr-4">Beranda</a>
-            <a href="{{ url('/riwayat') }}" class="mr-4">Riwayat Kunjungan</a>
-            <a href="{{ url('/obat') }}" class="mr-4">Data Obat</a>
-            <a href="{{ url('/tentang') }}" class="mr-4">Tentang</a>
-        </div>
-        <div>
-            @guest
-                <a href="{{ route('login') }}" class="text-blue-500">Login</a>
-            @else
-                <form action="{{ route('logout') }}" method="POST" class="inline">
-                    @csrf
-                    <button type="submit" class="text-red-500">Logout</button>
-                </form>
-            @endguest
-        </div>
-    </nav>
+@extends('layouts.app')
 
-    <!-- Content -->
-    <div class="container mx-auto p-6">
-        @yield('content')
+@section('content')
+    <h3 class="mb-4">Dashboard Siswa</h3>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="content-card mb-4">
+                <h5>Informasi UKS</h5>
+                <p>Selamat datang di aplikasi UKS MyApp. Silakan cek data kunjungan atau informasi kesehatan terbaru.</p>
+            </div>
+        </div>
     </div>
-</body>
-</html>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="content-card">
+                <h5>Berita Terbaru</h5>
+                @forelse($berita as $item)
+                    <div class="mb-3 border-bottom pb-2">
+                        <h6>{{ $item->judul }}</h6>
+                        @if($item->gambar)
+                            <img src="{{ asset('storage/' . $item->gambar) }}" 
+                                 alt="{{ $item->judul }}" 
+                                 class="img-fluid mb-2" 
+                                 style="max-height: 200px; object-fit: cover;">
+                        @endif
+                        <a href="{{ route('berita.show', $item->id) }}" class="btn btn-sm btn-primary">
+    Baca Selengkapnya
+</a>
+
+                    </div>
+                @empty
+                    <p>Belum ada berita tersedia.</p>
+                @endforelse
+            </div>
+        </div>
+    </div>
+@endsection

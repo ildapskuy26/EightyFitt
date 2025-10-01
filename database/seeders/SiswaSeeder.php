@@ -15,6 +15,8 @@ class SiswaSeeder extends Seeder
             'email' => 'siswa@example.com',
             'password' => Hash::make('password'),
             'role' => 'siswa',
+            'nis' => '123456',
         ]);
+        
     }
 }

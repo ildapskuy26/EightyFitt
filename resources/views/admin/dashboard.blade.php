@@ -8,8 +8,8 @@
     <div class="card-body">
         <h5>Menu Admin</h5>
         <ul>
-            <li><a href="#">Kelola User</a></li>
-            <li><a href="#">Laporan</a></li>
+            <li><a href="{{ route('petugas.index') }}">Kelola User</a></li>
+             <li><a href="#">Laporan</a></li>
         </ul>
     </div>
 </div>
