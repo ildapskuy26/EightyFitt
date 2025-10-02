@@ -1,10 +1,13 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
+    <!DOCTYPE html>
+    <html lang="id">
+    <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>UKS - SMKN 8 JAKARTA</title>
     <link rel="icon" type="image/png" href="{{ asset('images/logouks.png') }}">
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
 
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -13,41 +16,113 @@
 
     <style>
         body {
-            background-color: #f8f9fa;
+    background-color: #DCEFE4; /* hijau pastel agak gelap, lebih adem */
+    color: #333;
+    font-family: 'Quicksand', sans-serif;
+}
+
+
+        /* Navbar */
+        .navbar {
+            background-color: #FFF9ED !important; /* cream aesthetic */
+            border-bottom: 1px solid #f1e7d0;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
         }
-        .navbar-brand {
-            font-weight: bold;
-            font-size: 1.3rem;
+        .navbar .navbar-brand span {
+            color: #2E7D32 !important; /* hijau tua brand */
+            font-weight: 700;
+            letter-spacing: 1px;
         }
-        .nav-link.active {
-            font-weight: 600;
-            color: #ffc107 !important;
+        .navbar .nav-link {
+            color: #444 !important;
+            font-weight: 500;
+            transition: all 0.3s ease-in-out;
         }
-        .content-card {
-            background-color: #fff;
-            border-radius: 12px;
-            box-shadow: 0 6px 14px rgba(0,0,0,0.1);
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-        .navbar-custom {
-            background: linear-gradient(90deg, #0d6efd, #0b5ed7);
+        .navbar .nav-link.active,
+        .navbar .nav-link:hover {
+            color: #2E7D32 !important;
+            background-color: rgba(192, 247, 193, 0.3);
+            border-radius: 6px;
+            padding: 6px 12px;
         }
         .user-info {
-            font-size: 0.95rem;
+            color: #2e4730 !important;
+            font-weight: 600;
+        }
+
+        /* Card & Table */
+        .card, .table {
+            background-color: rgba(255, 255, 255, 0.85); 
+            color: #333;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+        }
+        .table thead {
+            background-color: #2E7D32;
             color: #fff;
         }
-        .user-info i {
-            margin-right: 5px;
+
+        /* Buttons */
+        .btn-primary, .btn-success {
+            background: linear-gradient(135deg, #2E7D32, #256228);
+            border: none;
+            color: #fff !important;
+            transition: all 0.3s ease-in-out;
+        }
+        .btn-primary:hover, .btn-success:hover {
+            background: linear-gradient(135deg, #256228, #1B4D1E);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+        .btn-primary:active, .btn-success:active {
+            background: linear-gradient(135deg, #1B4D1E, #2E7D32);
+            transform: translateY(0);
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2) inset;
+        }
+
+        .btn-warning {
+            background-color: #FFCA28;
+            border: none;
+            color: #000;
+            transition: all 0.3s ease-in-out;
+        }
+        .btn-warning:hover {
+            background-color: #f9a825;
+        }
+
+        .btn-danger {
+            background-color: #E53935;
+            border: none;
+            transition: all 0.3s ease-in-out;
+        }
+        .btn-danger:hover {
+            background-color: #c62828;
+        }
+
+        /* Forms */
+        .form-control, .form-select {
+            background-color: #fff;
+            color: #333;
+            border: 1px solid #ccc;
+        }
+        .form-control:focus, .form-select:focus {
+            background-color: #F1F8F5;
+            border-color: #43A047;
+            box-shadow: none;
         }
     </style>
-</head>
-<body>
+    </head>
+
+    <body>
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom shadow-sm">
+    <nav class="navbar navbar-expand-lg shadow-sm">
         <div class="container">
             <a class="navbar-brand d-flex align-items-center" href="#">
                 <img src="{{ asset('images/logouks.png') }}" alt="Logo" width="60" height="40" class="me-2">
+                <span class="fw-bold">UKS</span>
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
@@ -78,7 +153,7 @@
 
                 <div class="d-flex align-items-center">
                     @auth
-                        <span class="user-info me-3">
+                        <span class="user-info me-3 text-dark">
                             <i class="bi bi-person-circle"></i> 
                             Halo, {{ auth()->user()->name }}
                         </span>
@@ -89,7 +164,7 @@
                     @endauth
 
                     @guest
-                        <a href="{{ route('login') }}" class="btn btn-light btn-sm">Login</a>
+                        <a href="{{ route('login') }}" class="btn btn-success btn-sm">Login</a>
                     @endguest
                 </div>
             </div>
@@ -105,5 +180,5 @@
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+    </body>
+    </html>

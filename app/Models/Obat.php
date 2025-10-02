@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Kunjungan; // ✅ tambahkan ini
 
 class Obat extends Model
 {
@@ -12,7 +13,11 @@ class Obat extends Model
     protected $table = 'obat';
 
     protected $fillable = [
-        'nama', 'jenis_obat', 'bentuk_obat', 'kategori_dosis', 'stock', 'dosis_per_hari'
+        'nama',
+        'jenis_obat',
+        'bentuk_obat',
+        'dosis_per_hari',
+        'stock'
     ];
 
     // Relasi ke Kunjungan

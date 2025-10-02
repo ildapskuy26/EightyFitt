@@ -10,19 +10,30 @@ use Illuminate\Support\Facades\Auth;
 
 class KunjunganController extends Controller
 {
-    public function index()
-    {
-        $user = Auth::user();
+    public function index(Request $request)
+{
+    $user = Auth::user();
 
-        $kunjungan = Kunjungan::with('obat')
-            ->when($user && $user->role === 'siswa', function ($query) use ($user) {
-                $query->where('nis', $user->nis);
-            })
-            ->orderBy('waktu_kedatangan', 'desc')
-            ->get();
+    $kunjungan = Kunjungan::with('obat')
+        ->when($user && $user->role === 'siswa', function ($query) use ($user) {
+            // siswa hanya boleh melihat data miliknya
+            $query->where('nis', $user->nis);
+        })
+        ->when($request->kelas, function ($query, $kelas) {
+            $query->where('kelas', 'like', "%$kelas%");
+        })
+        ->when($request->jurusan, function ($query, $jurusan) {
+            $query->where('jurusan', 'like', "%$jurusan%");
+        })
+        ->when($request->tanggal, function ($query, $tanggal) {
+            $query->whereDate('waktu_kedatangan', $tanggal);
+        })
+        ->orderBy('waktu_kedatangan', 'desc')
+        ->get();
 
-        return view('kunjungan.index', compact('kunjungan'));
-    }
+    return view('kunjungan.index', compact('kunjungan'));
+}
+
 
     public function create()
     {

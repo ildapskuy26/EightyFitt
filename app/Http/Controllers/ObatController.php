@@ -9,8 +9,8 @@ class ObatController extends Controller
 {
     public function __construct()
     {
-        $this->middleware(['auth','role:admin|petugas'])
-        ->except(['index']);
+        $this->middleware(['auth','role:admin,petugas'])
+        ->except(['index', 'show']);
     }
 
     // List semua obat
@@ -33,7 +33,6 @@ class ObatController extends Controller
             'nama'          => 'required|string|max:255',
             'jenis_obat'    => 'required|string|max:100',
             'bentuk_obat'   => 'required|string|max:100',
-            'kategori_dosis'=> 'nullable|string|max:100',
             'dosis_per_hari'=> 'required|integer|min:1',
             'stock'         => 'required|integer|min:0',
         ]);
@@ -42,7 +41,6 @@ class ObatController extends Controller
             'nama'          => $request->nama,
             'jenis_obat'    => $request->jenis_obat,
             'bentuk_obat'   => $request->bentuk_obat,
-            'kategori_dosis'=> $request->kategori_dosis,
             'dosis_per_hari'=> $request->dosis_per_hari,
             'stock'         => $request->stock,
         ]);

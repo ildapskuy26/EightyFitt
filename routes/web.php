@@ -44,13 +44,12 @@ Route::get('/riwayat', [KunjunganController::class, 'index'])->name('riwayat.ind
 // ====================
 // Obat
 // ====================
-// Semua user bisa lihat daftar & detail obat
-Route::resource('obat', ObatController::class)->only(['index','show']);
 
-// CRUD Obat hanya untuk admin & petugas
-Route::middleware(['auth','role:admin|petugas'])->group(function () {
-    Route::resource('obat', ObatController::class)->except(['index','show']);
-});
+// Semua user (tanpa login) bisa lihat daftar & detail obat
+Route::resource('obat', ObatController::class);
+
+
+
 
 // ====================
 // Dashboard masing-masing role
@@ -79,14 +78,8 @@ Route::middleware(['auth','role:admin,petugas'])->group(function () {
 // Berita
 // ====================
 // Semua user bisa lihat daftar & detail berita
-Route::resource('berita', BeritaController::class)->only(['index']);
-Route::get('berita/{berita}', [BeritaController::class, 'show'])->name('berita.show');
+Route::resource('berita', BeritaController::class)->parameters(['berita' => 'berita']);
 
-// CRUD berita hanya untuk admin & petugas
-Route::middleware(['auth','role:admin|petugas'])->group(function () {
-    Route::resource('berita', BeritaController::class)->except(['index','show'])
-        ->parameters(['berita' => 'berita']);
-});
 
 // ====================
 // Manajemen Petugas (khusus admin)
