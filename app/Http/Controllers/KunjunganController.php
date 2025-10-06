@@ -12,24 +12,35 @@ class KunjunganController extends Controller
 {
     public function index(Request $request)
 {
-    $user = Auth::user();
+    $query = Kunjungan::with('obat');
 
-    $kunjungan = Kunjungan::with('obat')
-        ->when($user && $user->role === 'siswa', function ($query) use ($user) {
-            // siswa hanya boleh melihat data miliknya
-            $query->where('nis', $user->nis);
-        })
-        ->when($request->kelas, function ($query, $kelas) {
-            $query->where('kelas', 'like', "%$kelas%");
-        })
-        ->when($request->jurusan, function ($query, $jurusan) {
-            $query->where('jurusan', 'like', "%$jurusan%");
-        })
-        ->when($request->tanggal, function ($query, $tanggal) {
-            $query->whereDate('waktu_kedatangan', $tanggal);
-        })
-        ->orderBy('waktu_kedatangan', 'desc')
-        ->get();
+    // Filter pencarian
+    if ($request->filled('keyword')) {
+        $query->where(function ($q) use ($request) {
+            $q->where('nis', 'like', "%{$request->keyword}%")
+              ->orWhere('nama', 'like', "%{$request->keyword}%");
+        });
+    }
+
+    // Filter kelas
+    if ($request->filled('kelas')) {
+        $query->where('kelas', 'like', "%{$request->kelas}%");
+    }
+
+    // Filter jurusan
+    if ($request->filled('jurusan')) {
+        $query->where('jurusan', 'like', "%{$request->jurusan}%");
+    }
+
+    // Filter rentang tanggal
+    if ($request->filled('tanggal_mulai') && $request->filled('tanggal_selesai')) {
+        $query->whereBetween('waktu_kedatangan', [
+            $request->tanggal_mulai . ' 00:00:00',
+            $request->tanggal_selesai . ' 23:59:59'
+        ]);
+    }
+
+    $kunjungan = $query->latest()->get();
 
     return view('kunjungan.index', compact('kunjungan'));
 }

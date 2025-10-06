@@ -170,22 +170,53 @@
       </div>
       <form method="GET" action="{{ route('kunjungan.index') }}">
           <div class="modal-body">
+              
+              <!-- Cari NIS / Nama -->
+              <div class="mb-3">
+                  <label for="keyword" class="form-label fw-semibold">Cari NIS / Nama</label>
+                  <input type="text" name="keyword" id="keyword" class="form-control"
+                         value="{{ request('keyword') }}" placeholder="Masukkan NIS atau Nama">
+              </div>
+
+              <!-- Filter Kelas -->
               <div class="mb-3">
                   <label for="kelas" class="form-label fw-semibold">Kelas</label>
                   <input type="text" name="kelas" id="kelas" class="form-control"
                          value="{{ request('kelas') }}" placeholder="Misal: X, XI, XII">
               </div>
+
+              <!-- Filter Jurusan -->
               <div class="mb-3">
                   <label for="jurusan" class="form-label fw-semibold">Jurusan</label>
                   <input type="text" name="jurusan" id="jurusan" class="form-control"
                          value="{{ request('jurusan') }}" placeholder="Misal: RPL, TKJ">
               </div>
-              <div class="mb-3">
-                  <label for="tanggal" class="form-label fw-semibold">Tanggal Kedatangan</label>
-                  <input type="date" name="tanggal" id="tanggal" class="form-control"
-                         value="{{ request('tanggal') }}">
+
+              <!-- Filter Rentang Waktu -->
+              <div class="row g-2 align-items-end">
+                  <div class="col-md-6">
+                      <label for="tanggal_mulai" class="form-label fw-semibold">Dari Tanggal</label>
+                      <input type="date" name="tanggal_mulai" id="tanggal_mulai" class="form-control"
+                             value="{{ request('tanggal_mulai') }}">
+                  </div>
+                  <div class="col-md-6">
+                      <label for="tanggal_selesai" class="form-label fw-semibold">Sampai Tanggal</label>
+                      <input type="date" name="tanggal_selesai" id="tanggal_selesai" class="form-control"
+                             value="{{ request('tanggal_selesai') }}">
+                  </div>
+              </div>
+
+              <!-- Tombol Cepat -->
+              <div class="mt-3">
+                  <label class="form-label fw-semibold">Rentang Cepat</label>
+                  <div class="d-flex flex-wrap gap-2">
+                      <button type="button" class="btn btn-sm btn-outline-success" onclick="setDateRange('week')">Minggu Ini</button>
+                      <button type="button" class="btn btn-sm btn-outline-primary" onclick="setDateRange('month')">Bulan Ini</button>
+                      <button type="button" class="btn btn-sm btn-outline-secondary" onclick="clearDateRange()">Bersihkan</button>
+                  </div>
               </div>
           </div>
+
           <div class="modal-footer">
               <a href="{{ route('kunjungan.index') }}" class="btn btn-secondary">
                   <i class="bi bi-arrow-counterclockwise"></i> Reset
@@ -198,6 +229,34 @@
     </div>
   </div>
 </div>
+
+<script>
+function setDateRange(type) {
+    const now = new Date();
+    let start, end;
+
+    if (type === 'week') {
+        const day = now.getDay(); // 0 = Minggu
+        const diffToMonday = day === 0 ? 6 : day - 1;
+        start = new Date(now);
+        start.setDate(now.getDate() - diffToMonday);
+        end = new Date(start);
+        end.setDate(start.getDate() + 6);
+    } else if (type === 'month') {
+        start = new Date(now.getFullYear(), now.getMonth(), 1);
+        end = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+    }
+
+    document.getElementById('tanggal_mulai').value = start.toISOString().split('T')[0];
+    document.getElementById('tanggal_selesai').value = end.toISOString().split('T')[0];
+}
+
+function clearDateRange() {
+    document.getElementById('tanggal_mulai').value = '';
+    document.getElementById('tanggal_selesai').value = '';
+}
+</script>
+
 
 <script>
     function openFilterModal() {
