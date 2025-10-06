@@ -1,106 +1,198 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="d-flex justify-content-between align-items-center mb-3">
-    <h3 class="mb-0">📋 Data Kunjungan</h3>
-    <div class="d-flex">
-        <a href="{{ route('kunjungan.create') }}" class="btn btn-primary me-2">
-            ➕ Tambah Kunjungan
-        </a>
-        <a href="{{ route('kunjungan.export.csv') }}" class="btn btn-success me-2">
-            ⬇️ Download CSV
-        </a>
-        <!-- Tombol Filter -->
-        <button type="button" onclick="openFilterModal()"
-             class="bg-success hover:bg-success-dark text-white px-3 py-2 rounded d-flex align-items-center">
-            <svg xmlns="http://www.w3.org/2000/svg" class="me-2" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414
-                     6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0
-                     00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
-            </svg>
-            Filter
-        </button>
+<style>
+    /* ===== Animasi masuk halaman ===== */
+    .fade-in {
+        opacity: 0;
+        transform: translateY(20px);
+        animation: fadeInUp 0.6s ease forwards;
+    }
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ===== Tampilan tabel & tombol ===== */
+    .table-row-hover {
+        transition: all 0.25s ease-in-out;
+    }
+    .table-row-hover:hover {
+        background-color: #eaf9ef !important;
+        transform: scale(1.01);
+        box-shadow: 0 3px 8px rgba(0,0,0,0.06);
+    }
+
+    .btn {
+        transition: 0.2s all ease-in-out;
+    }
+    .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    /* ===== Header gradasi ===== */
+    .text-gradient {
+        background: linear-gradient(90deg, #198754, #20c997);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    /* ===== Responsif tabel di HP ===== */
+    @media (max-width: 768px) {
+        .table thead { display: none; }
+        .table, .table tbody, .table tr, .table td { display: block; width: 100%; }
+        .table tr { margin-bottom: 1rem; border: 1px solid #dee2e6; border-radius: 10px; padding: 0.75rem; background: #fff; }
+        .table td {
+            text-align: right;
+            padding-left: 50%;
+            position: relative;
+        }
+        .table td::before {
+            content: attr(data-label);
+            position: absolute;
+            left: 15px;
+            width: 45%;
+            font-weight: 600;
+            text-align: left;
+            color: #495057;
+        }
+    }
+
+    /* ===== Shadow lembut ===== */
+    .table-responsive {
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+    /* ===== Modal tampilan lebih elegan ===== */
+    .modal-content {
+        border-radius: 12px;
+        border: none;
+    }
+    .modal-header {
+        border-bottom: none;
+        background: linear-gradient(90deg, #20c997, #198754);
+        color: white;
+    }
+    .modal-footer {
+        border-top: none;
+    }
+</style>
+
+<div class="container fade-in">
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
+        <h3 class="mb-0 fw-bold text-gradient d-flex align-items-center">
+            <i class="bi bi-person-lines-fill me-2"></i> Data Kunjungan
+        </h3>
+        <div class="d-flex flex-wrap gap-2">
+            <a href="{{ route('kunjungan.create') }}" class="btn btn-primary shadow-sm">
+                <i class="bi bi-plus-circle"></i> Tambah
+            </a>
+            <a href="{{ route('kunjungan.export.csv') }}" class="btn btn-info shadow-sm text-white">
+                <i class="bi bi-download"></i> CSV
+            </a>
+            <button type="button" onclick="openFilterModal()" class="btn btn-warning shadow-sm text-dark">
+                <i class="bi bi-funnel-fill"></i> Filter
+            </button>
+        </div>
+    </div>
+
+    @if(session('success'))
+    <div class="alert alert-success alert-dismissible fade show shadow-sm fade-in" role="alert">
+        <i class="bi bi-check-circle-fill"></i> {{ session('success') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    @endif
+
+    <div class="table-responsive shadow-sm fade-in">
+        <table class="table align-middle table-hover mb-0">
+            <thead class="table-light text-center">
+                <tr>
+                    <th>No</th>
+                    <th>NIS</th>
+                    <th>Nama</th>
+                    <th>Kelas</th>
+                    <th>Jurusan</th>
+                    <th>Waktu Kedatangan</th>
+                    <th>Waktu Keluar</th>
+                    <th>Keluhan</th>
+                    <th>Obat</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse($kunjungan as $k)
+                <tr class="table-row-hover">
+                    <td data-label="No">{{ $loop->iteration }}</td>
+                    <td data-label="NIS">{{ $k->nis }}</td>
+                    <td data-label="Nama" class="fw-semibold text-dark">{{ $k->nama }}</td>
+                    <td data-label="Kelas">{{ $k->kelas }}</td>
+                    <td data-label="Jurusan">{{ $k->jurusan }}</td>
+                    <td data-label="Kedatangan">{{ $k->waktu_kedatangan }}</td>
+                    <td data-label="Keluar">{{ $k->waktu_keluar ?? '-' }}</td>
+                    <td data-label="Keluhan">{{ $k->keluhan ?? '-' }}</td>
+                    <td data-label="Obat">
+                        <span class="badge bg-success-subtle text-success border border-success">
+                            {{ $k->obat->nama ?? '-' }}
+                        </span>
+                    </td>
+                    <td data-label="Aksi" class="text-center">
+                        <a href="{{ route('kunjungan.edit',$k->id) }}" class="btn btn-sm btn-outline-warning me-1">
+                            <i class="bi bi-pencil-square"></i>
+                        </a>
+                        <form action="{{ route('kunjungan.destroy',$k->id) }}" method="POST" class="d-inline">
+                            @csrf @method('DELETE')
+                            <button class="btn btn-sm btn-outline-danger"
+                                    onclick="return confirm('Hapus data kunjungan?')">
+                                <i class="bi bi-trash3-fill"></i>
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                @empty
+                <tr>
+                    <td colspan="10" class="text-center text-muted py-3">Tidak ada data kunjungan</td>
+                </tr>
+                @endforelse
+            </tbody>
+        </table>
     </div>
 </div>
-
-@if(session('success'))
-<div class="alert alert-success">{{ session('success') }}</div>
-@endif
-
-<table class="table table-striped table-bordered">
-    <thead class="table-primary">
-        <tr>
-            <th>No</th>
-            <th>NIS</th>
-            <th>Nama</th>
-            <th>Kelas</th>
-            <th>Jurusan</th>
-            <th>Waktu Kedatangan</th>
-            <th>Waktu Keluar</th>
-            <th>Keluhan</th>
-            <th>Obat</th>
-            <th>Aksi</th>
-        </tr>
-    </thead>
-    <tbody>
-        @forelse($kunjungan as $k)
-        <tr>
-            <td>{{ $loop->iteration }}</td>
-            <td>{{ $k->nis }}</td>
-            <td>{{ $k->nama }}</td>
-            <td>{{ $k->kelas }}</td>
-            <td>{{ $k->jurusan }}</td>
-            <td>{{ $k->waktu_kedatangan }}</td>
-            <td>{{ $k->waktu_keluar ?? '-' }}</td>
-            <td>{{ $k->keluhan ?? '-' }}</td>
-            <td>{{ $k->obat->nama ?? '-' }}</td>
-            <td>
-                <a href="{{ route('kunjungan.edit',$k->id) }}" class="btn btn-sm btn-warning">Edit</a>
-                <form action="{{ route('kunjungan.destroy',$k->id) }}" method="POST" style="display:inline-block;">
-                    @csrf
-                    @method('DELETE')
-                    <button class="btn btn-sm btn-danger" onclick="return confirm('Hapus data kunjungan?')">Hapus</button>
-                </form>
-            </td>
-        </tr>
-        @empty
-        <tr>
-            <td colspan="10" class="text-center">Tidak ada data kunjungan</td>
-        </tr>
-        @endforelse
-    </tbody>
-</table>
 
 <!-- Modal Filter -->
 <div class="modal fade" id="filterModal" tabindex="-1" aria-labelledby="filterModalLabel" aria-hidden="true">
   <div class="modal-dialog">
-    <div class="modal-content">
+    <div class="modal-content shadow-lg">
       <div class="modal-header">
-        <h5 class="modal-title">Filter Data Kunjungan</h5>
+        <h5 class="modal-title fw-bold"><i class="bi bi-funnel me-2"></i>Filter Data Kunjungan</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
       <form method="GET" action="{{ route('kunjungan.index') }}">
           <div class="modal-body">
               <div class="mb-3">
-                  <label for="kelas" class="form-label">Kelas</label>
+                  <label for="kelas" class="form-label fw-semibold">Kelas</label>
                   <input type="text" name="kelas" id="kelas" class="form-control"
                          value="{{ request('kelas') }}" placeholder="Misal: X, XI, XII">
               </div>
               <div class="mb-3">
-                  <label for="jurusan" class="form-label">Jurusan</label>
+                  <label for="jurusan" class="form-label fw-semibold">Jurusan</label>
                   <input type="text" name="jurusan" id="jurusan" class="form-control"
                          value="{{ request('jurusan') }}" placeholder="Misal: RPL, TKJ">
               </div>
               <div class="mb-3">
-                  <label for="tanggal" class="form-label">Tanggal Kedatangan</label>
+                  <label for="tanggal" class="form-label fw-semibold">Tanggal Kedatangan</label>
                   <input type="date" name="tanggal" id="tanggal" class="form-control"
                          value="{{ request('tanggal') }}">
               </div>
           </div>
           <div class="modal-footer">
-              <a href="{{ route('kunjungan.index') }}" class="btn btn-secondary">Reset</a>
-              <button type="submit" class="btn btn-success">Terapkan</button>
+              <a href="{{ route('kunjungan.index') }}" class="btn btn-secondary">
+                  <i class="bi bi-arrow-counterclockwise"></i> Reset
+              </a>
+              <button type="submit" class="btn btn-success">
+                  <i class="bi bi-check-circle"></i> Terapkan
+              </button>
           </div>
       </form>
     </div>
@@ -109,8 +201,19 @@
 
 <script>
     function openFilterModal() {
-        var modal = new bootstrap.Modal(document.getElementById('filterModal'));
+        const modal = new bootstrap.Modal(document.getElementById('filterModal'));
         modal.show();
     }
+
+    // Delay animasi tiap elemen
+    document.addEventListener("DOMContentLoaded", () => {
+        const elements = document.querySelectorAll('.fade-in');
+        elements.forEach((el, i) => {
+            setTimeout(() => {
+                el.style.opacity = "1";
+                el.style.transform = "translateY(0)";
+            }, i * 100);
+        });
+    });
 </script>
 @endsection

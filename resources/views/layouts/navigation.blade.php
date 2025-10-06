@@ -2,7 +2,7 @@
     <div class="container-fluid">
         <!-- Logo -->
         <a class="navbar-brand" href="{{ route('dashboard') }}">
-            <x-application-logo class="d-inline-block align-text-top" style="height:30px;" />
+        <x-application-logo class="d-inline-block align-text-top" style="height:25px; width:auto;" />
         </a>
 
         <!-- Toggle (mobile) -->

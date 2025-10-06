@@ -13,10 +13,13 @@ class PetugasManagementController extends Controller
         $this->middleware(['auth','role:admin']);
     }
 
+    
+    
     public function index()
     {
-        $petugas = User::where('role', 'petugas')->latest()->paginate(10);
-        return view('petugas.index', compact('petugas'));
+        $petugas = User::where('role', 'petugas')->latest()->paginate(10, ['*'], 'petugas');
+        $siswa = User::where('role', 'siswa')->latest()->paginate(10, ['*'], 'siswa');
+        return view('petugas.index', compact('petugas', 'siswa'));
     }
 
     public function create()
