@@ -31,6 +31,12 @@
     </div>
 
     <div class="mb-3">
+  <label for="diagnosis" class="form-label">Diagnosis</label>
+  <input type="text" name="diagnosis" class="form-control" required>
+</div>
+
+
+    <div class="mb-3">
         <label>Obat yang Diberikan</label>
         <select name="obat_id" class="form-select">
             <option value="">-- Tidak Ada --</option>

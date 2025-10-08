@@ -195,12 +195,18 @@
             </ul>
         </div>
 
+        
         <div class="content-wrapper">
             <div class="d-flex justify-content-end mb-3">
                 <button id="toggleDarkMode" class="dark-toggle" title="Ubah Tema">
                     <i class="bi bi-moon"></i>
                 </button>
             </div>
+            @if(session('error'))
+                <div class="alert alert-danger text-center mb-3">
+                    {{ session('error') }}
+                </div>
+            @endif
             @yield('content')
         </div>
 

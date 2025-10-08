@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Obat;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ObatController extends Controller
 {
@@ -16,8 +17,15 @@ class ObatController extends Controller
     // List semua obat
     public function index()
     {
-        $obat = Obat::orderBy('nama')->get();
-        return view('obat.index', compact('obat'));
+        $user = Auth::user();
+        $siswa = \App\Models\Siswa::where('nis', $user->nis)->first();
+
+        if (!$siswa) {
+            return redirect()->back()->with('error', 'Hanya siswa terdaftar yang bisa melihat data obat.');
+        }
+
+        $obats = \App\Models\Obat::all();
+        return view('obat.index', compact('obats'));
     }
 
     // Form tambah

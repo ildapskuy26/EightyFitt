@@ -12,14 +12,7 @@ use App\Http\Controllers\PetugasManagementController;
 use App\Http\Controllers\SiswaManagementController;
 use App\Http\Controllers\KontakController;
 use App\Http\Controllers\Auth\GoogleController;
-
-// ====================
-// Halaman Kontak
-// ====================
-// Kontak Routes
-Route::get('/kontak', [KontakController::class, 'index'])->name('kontak.index');
-Route::post('/kontak/send', [KontakController::class, 'send'])->name('kontak.send');
-
+use App\Http\Controllers\Auth\SiswaAuthController;
 
 // ====================
 // Halaman Utama
@@ -28,14 +21,39 @@ Route::get('/', [BeritaController::class, 'index'])->name('beranda');
 Route::view('/tentang', 'pages.tentang')->name('tentang');
 
 // ====================
-// Dashboard umum
+// Halaman Kontak
 // ====================
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/kontak', [KontakController::class, 'index'])->name('kontak.index');
+Route::post('/kontak/send', [KontakController::class, 'send'])->name('kontak.send');
 
 // ====================
-// Profile (hanya login user)
+// Login & Register Siswa (guard: siswa)
+// ====================
+Route::prefix('siswa')->name('siswa.')->group(function () {
+    Route::get('/login', [SiswaAuthController::class, 'showLoginForm'])->name('login');
+    Route::post('/login', [SiswaAuthController::class, 'login'])->name('login.submit');
+    Route::post('/logout', [SiswaAuthController::class, 'logout'])->name('logout');
+
+    Route::get('/register', [SiswaAuthController::class, 'showRegisterForm'])->name('register');
+    Route::post('/register', [SiswaAuthController::class, 'register'])->name('register.submit');
+
+    Route::middleware('auth:siswa')->group(function () {
+        Route::get('/dashboard', [SiswaController::class, 'home'])->name('dashboard');
+        Route::get('/riwayat', [SiswaController::class, 'riwayat'])->name('riwayat');
+        Route::get('/profile', [App\Http\Controllers\SiswaProfileController::class, 'edit'])->name('profile.edit');
+        Route::post('/profile/password', [App\Http\Controllers\SiswaProfileController::class, 'updatePassword'])->name('profile.password');
+    });
+});
+
+// ====================
+// Dashboard umum (user default, mis. admin/petugas)
+// ====================
+Route::get('/dashboard', fn() => view('dashboard'))
+    ->middleware(['auth', 'verified'])
+    ->name('dashboard');
+
+// ====================
+// Profile (user default, bukan siswa)
 // ====================
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -46,46 +64,33 @@ Route::middleware('auth')->group(function () {
 require __DIR__.'/auth.php';
 
 // ====================
-// Riwayat Kunjungan
-// ====================
-Route::get('/riwayat', [KunjunganController::class, 'index'])->name('riwayat.index');
-
-// ====================
-// Obat
-// ====================
-Route::resource('obat', ObatController::class);
-
-// ====================
-// Dashboard masing-masing role
+// Dashboard per Role
 // ====================
 Route::middleware(['auth', 'role:admin'])->get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
 Route::middleware(['auth', 'role:petugas'])->get('/petugas/dashboard', [PetugasController::class, 'index'])->name('petugas.dashboard');
 
-Route::middleware(['auth','role:siswa'])->group(function () {
-    Route::get('/siswa/dashboard', [SiswaController::class, 'home'])->name('siswa.dashboard');
-    Route::get('/siswa/riwayat', [SiswaController::class, 'riwayat'])->name('siswa.riwayat');
-});
-
 // ====================
 // CRUD Kunjungan (admin + petugas)
 // ====================
-Route::middleware(['auth','role:admin,petugas'])->group(function () {
+Route::middleware(['auth', 'role:admin,petugas'])->group(function () {
     Route::resource('kunjungan', KunjunganController::class);
     Route::get('/kunjungan/export/csv', [KunjunganController::class, 'exportCsv'])->name('kunjungan.export.csv');
+    Route::get('/kunjungan/laporan', [KunjunganController::class, 'laporan'])->name('kunjungan.laporan');
 });
 
 // ====================
-// Berita
+// CRUD Obat & Berita
 // ====================
+Route::resource('obat', ObatController::class);
 Route::resource('berita', BeritaController::class)->parameters(['berita' => 'berita']);
 
 // ====================
-// Manajemen Petugas (khusus admin)
+// Manajemen Petugas & Siswa (khusus admin)
 // ====================
-Route::middleware(['auth','role:admin'])->group(function () {
+Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::resource('petugas', PetugasManagementController::class);
+    Route::resource('siswa', SiswaManagementController::class);
 });
-Route::resource('siswa', SiswaManagementController::class)->middleware(['auth','role:admin']);
 
 // ====================
 // Google Auth

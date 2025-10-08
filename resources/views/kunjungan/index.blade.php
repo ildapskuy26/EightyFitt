@@ -79,6 +79,12 @@
         border-top: none;
     }
 </style>
+@if(session('warning'))
+<div class="alert alert-warning">
+    {{ session('warning') }}
+</div>
+@endif
+
 
 <div class="container fade-in">
     <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">

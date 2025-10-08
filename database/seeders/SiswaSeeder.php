@@ -3,20 +3,20 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\User;
+use App\Models\Siswa;
 use Illuminate\Support\Facades\Hash;
 
 class SiswaSeeder extends Seeder
 {
     public function run(): void
     {
-        User::create([
-            'name' => 'Siswa 1',
-            'email' => 'siswa@example.com',
-            'password' => Hash::make('password'),
-            'role' => 'siswa',
-            'nis' => '123456',
+
+        Siswa::create([
+            'nama' => 'Rifki Hutan Gundul',
+            'nis' => '13579',
+            'kelas' => 'XII TU 69',
+            'jurusan' => 'Tanpa Busana',
+            'riwayat_penyakit' => 'Tidak ada',
         ]);
-        
     }
 }

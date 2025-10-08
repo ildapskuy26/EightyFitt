@@ -35,12 +35,16 @@ class RegisteredUserController extends Controller
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
+        // Cari siswa berdasarkan nama yang diinput user
+        $siswa = \App\Models\Siswa::where('nama', $request->name)->first();
+
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'nis' => $siswa?->nis,
         ]);
-
+        
         event(new Registered($user));
 
         Auth::login($user);
