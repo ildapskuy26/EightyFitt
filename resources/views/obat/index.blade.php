@@ -41,7 +41,7 @@
                 </tr>
             </thead>
             <tbody>
-                @forelse($obat as $o)
+                @forelse($obats as $o)
                 <tr class="table-row-hover">
                     <td class="text-center fw-semibold">{{ $loop->iteration }}</td>
                     <td>{{ $o->nama }}</td>

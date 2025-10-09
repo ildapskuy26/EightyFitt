@@ -10,25 +10,25 @@ use Illuminate\Support\Facades\Auth;
 class SiswaController extends Controller
 {
 
-public function home()
+    public function home()
     {
-        return view('layouts.siswa.dashboard');
+        return view('siswa.dashboard');
     }
 
     public function riwayat()
     {
-        $user = Auth::user();
+        $user = Auth::guard('siswa')->user();
 
-        // Pastikan user terhubung ke data siswa
-        $siswa = Siswa::where('nis', $user->nis)->first();
-
-        if (!$siswa) {
-            return redirect()->back()->with('error', 'Anda tidak terdaftar sebagai siswa. Riwayat tidak dapat ditampilkan.');
+        if (!$user) {
+            return redirect()->route('siswa.login')->with('error', 'Silakan login terlebih dahulu.');
         }
 
-        // Ambil kunjungan milik siswa tersebut
-        $riwayats = Kunjungan::where('nis', $siswa->nis)->get();
+        // Ambil kunjungan siswa berdasarkan nis
+        $riwayat = Kunjungan::with('obat')
+            ->where('nis', $user->nis)
+            ->orderBy('waktu_kedatangan', 'desc')
+            ->paginate(10);
 
-        return view('riwayat', compact('riwayats'));
+        return view('siswa.riwayat', compact('riwayat'));
     }
 }

@@ -7,6 +7,7 @@ use App\Models\Siswa;
 use App\Models\Obat;
 use App\Models\Kunjungan;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 
 class KunjunganController extends Controller
 {
@@ -14,29 +15,45 @@ class KunjunganController extends Controller
      * Tampilkan daftar kunjungan.
      */
     public function index(Request $request)
-    {
-       $user = Auth::user();
+{
+    $query = Kunjungan::with('obat');
 
-        if ($user->role === 'siswa' && $user->nis) {
-            $riwayat = Kunjungan::where('nis', $user->nis)->get();
-        } else {
-            // jika bukan siswa valid, tidak bisa lihat apa pun
-            $riwayat = collect(); 
+    // Jika role siswa, hanya tampilkan miliknya sendiri
+    if (auth()->user()->role === 'siswa') {
+        $query->where('nis', auth()->user()->nis);
+    }
+
+    // Filter NIS / Nama
+    if ($request->filled('search')) {
+        $query->where(function ($q) use ($request) {
+            $q->where('nis', 'like', "%{$request->search}%")
+              ->orWhere('nama', 'like', "%{$request->search}%");
+        });
+    }
+
+    // Filter kelas / jurusan
+    if ($request->filled('kelas')) {
+        $query->where('kelas', 'like', "%{$request->kelas}%");
+    }
+    if ($request->filled('jurusan')) {
+        $query->where('jurusan', 'like', "%{$request->jurusan}%");
+    }
+
+    // Filter rentang waktu
+    if ($request->filled('range')) {
+        if ($request->range === 'week') {
+            $query->whereBetween('waktu_kedatangan', [now()->startOfWeek(), now()->endOfWeek()]);
+        } elseif ($request->range === 'month') {
+            $query->whereBetween('waktu_kedatangan', [now()->startOfMonth(), now()->endOfMonth()]);
         }
-
-        return view('siswa.riwayat', compact('riwayat'));
     }
 
-    /**
-     * Form tambah kunjungan.
-     */
-    public function create()
-    {
-        $siswa = Siswa::all();
-        $obat  = Obat::all();
+    $kunjungan = $query->latest()->get();
 
-        return view('kunjungan.create', compact('siswa', 'obat'));
-    }
+    return view('kunjungan.index', compact('kunjungan'));
+}
+
+
 
     /**
      * Simpan data kunjungan baru.
@@ -74,10 +91,24 @@ class KunjunganController extends Controller
     ->whereBetween('waktu_kedatangan', [now()->startOfWeek(), now()->endOfWeek()])
     ->count();
 
-if ($kunjunganCount >= 3) {
-    // Simpan notifikasi sederhana (atau tampilkan alert di view)
-    session()->flash('warning', '⚠️ Siswa ini sudah sering sakit minggu ini. Perlu rujukan lebih lanjut.');
-}
+$kunjunganCount = Kunjungan::where('nis', $siswa->nis)
+        ->whereBetween('waktu_kedatangan', [now()->startOfWeek(), now()->endOfWeek()])
+        ->count();
+
+    // 🔶 Warna peringatan
+    if ($kunjunganCount >= 5) {
+        Session::flash('alert', [
+            'type' => 'danger', // merah
+            'message' => "⚠️ Siswa sudah berkunjung 5 kali minggu ini. Perlu dirujuk ke pusat layanan kesehatan terdekat!"
+        ]);
+    } elseif ($kunjunganCount >= 3) {
+        Session::flash('alert', [
+            'type' => 'warning', // kuning
+            'message' => "⚠️ Siswa sudah berkunjung 3 kali minggu ini."
+        ]);
+    }
+
+    return redirect()->route('kunjungan.index')->with('success', 'Data kunjungan berhasil ditambahkan.');
 
     }
 

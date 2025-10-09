@@ -128,40 +128,58 @@
                 </tr>
             </thead>
             <tbody>
-                @forelse($kunjungan as $k)
-                <tr class="table-row-hover">
-                    <td data-label="No">{{ $loop->iteration }}</td>
-                    <td data-label="NIS">{{ $k->nis }}</td>
-                    <td data-label="Nama" class="fw-semibold text-dark">{{ $k->nama }}</td>
-                    <td data-label="Kelas">{{ $k->kelas }}</td>
-                    <td data-label="Jurusan">{{ $k->jurusan }}</td>
-                    <td data-label="Kedatangan">{{ $k->waktu_kedatangan }}</td>
-                    <td data-label="Keluar">{{ $k->waktu_keluar ?? '-' }}</td>
-                    <td data-label="Keluhan">{{ $k->keluhan ?? '-' }}</td>
-                    <td data-label="Obat">
-                        <span class="badge bg-success-subtle text-success border border-success">
-                            {{ $k->obat->nama ?? '-' }}
-                        </span>
-                    </td>
-                    <td data-label="Aksi" class="text-center">
-                        <a href="{{ route('kunjungan.edit',$k->id) }}" class="btn btn-sm btn-outline-warning me-1">
-                            <i class="bi bi-pencil-square"></i>
-                        </a>
-                        <form action="{{ route('kunjungan.destroy',$k->id) }}" method="POST" class="d-inline">
-                            @csrf @method('DELETE')
-                            <button class="btn btn-sm btn-outline-danger"
-                                    onclick="return confirm('Hapus data kunjungan?')">
-                                <i class="bi bi-trash3-fill"></i>
-                            </button>
-                        </form>
-                    </td>
-                </tr>
-                @empty
-                <tr>
-                    <td colspan="10" class="text-center text-muted py-3">Tidak ada data kunjungan</td>
-                </tr>
-                @endforelse
-            </tbody>
+    @forelse($kunjungan as $k)
+    <tr class="table-row-hover">
+        <td data-label="No">{{ $loop->iteration }}</td>
+        <td data-label="NIS">{{ $k->nis }}</td>
+        <td data-label="Nama" class="fw-semibold text-dark">{{ $k->nama }}</td>
+        <td data-label="Kelas">{{ $k->kelas }}</td>
+        <td data-label="Jurusan">{{ $k->jurusan }}</td>
+        <td data-label="Kedatangan">{{ $k->waktu_kedatangan }}</td>
+        <td data-label="Keluar">{{ $k->waktu_keluar ?? '-' }}</td>
+        <td data-label="Keluhan">{{ $k->keluhan ?? '-' }}</td>
+        <td data-label="Obat">
+            <span class="badge bg-success-subtle text-success border border-success">
+                {{ $k->obat->nama ?? '-' }}
+            </span>
+        </td>
+        <!-- Tambahkan kolom penanda kunjungan -->
+        <td data-label="Kunjungan">
+            @php
+                $count = \App\Models\Kunjungan::where('nis', $k->nis)->count();
+                if ($count >= 5) {
+                    $color = 'danger';
+                    $message = 'Perlu dirujuk!';
+                } elseif ($count >= 3) {
+                    $color = 'warning';
+                    $message = 'Sering berkunjung';
+                } else {
+                    $color = 'success';
+                    $message = 'Normal';
+                }
+            @endphp
+            <span class="badge bg-{{ $color }}">{{ $message }}</span>
+        </td>
+        <td data-label="Aksi" class="text-center">
+            <a href="{{ route('kunjungan.edit',$k->id) }}" class="btn btn-sm btn-outline-warning me-1">
+                <i class="bi bi-pencil-square"></i>
+            </a>
+            <form action="{{ route('kunjungan.destroy',$k->id) }}" method="POST" class="d-inline">
+                @csrf @method('DELETE')
+                <button class="btn btn-sm btn-outline-danger"
+                        onclick="return confirm('Hapus data kunjungan?')">
+                    <i class="bi bi-trash3-fill"></i>
+                </button>
+            </form>
+        </td>
+    </tr>
+    @empty
+    <tr>
+        <td colspan="11" class="text-center text-muted py-3">Tidak ada data kunjungan</td>
+    </tr>
+    @endforelse
+</tbody>
+
         </table>
     </div>
 </div>
@@ -177,6 +195,11 @@
       <form method="GET" action="{{ route('kunjungan.index') }}">
           <div class="modal-body">
               <div class="mb-3">
+                  <label for="search" class="form-label fw-semibold">Cari NIS / Nama</label>
+                  <input type="text" name="search" id="search" class="form-control"
+                         value="{{ request('search') }}" placeholder="Masukkan NIS atau Nama">
+              </div>
+              <div class="mb-3">
                   <label for="kelas" class="form-label fw-semibold">Kelas</label>
                   <input type="text" name="kelas" id="kelas" class="form-control"
                          value="{{ request('kelas') }}" placeholder="Misal: X, XI, XII">
@@ -187,9 +210,12 @@
                          value="{{ request('jurusan') }}" placeholder="Misal: RPL, TKJ">
               </div>
               <div class="mb-3">
-                  <label for="tanggal" class="form-label fw-semibold">Tanggal Kedatangan</label>
-                  <input type="date" name="tanggal" id="tanggal" class="form-control"
-                         value="{{ request('tanggal') }}">
+                  <label class="form-label fw-semibold">Rentang Waktu</label>
+                  <select name="range" class="form-select">
+                      <option value="" {{ request('range')=='' ? 'selected' : '' }}>Semua</option>
+                      <option value="week" {{ request('range')=='week' ? 'selected' : '' }}>Perminggu</option>
+                      <option value="month" {{ request('range')=='month' ? 'selected' : '' }}>Perbulan</option>
+                  </select>
               </div>
           </div>
           <div class="modal-footer">
@@ -204,6 +230,14 @@
     </div>
   </div>
 </div>
+
+
+@if(session('alert'))
+    <div class="alert alert-{{ session('alert.type') }} shadow-sm rounded-3">
+        {{ session('alert.message') }}
+    </div>
+@endif
+
 
 <script>
     function openFilterModal() {

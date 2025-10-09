@@ -14,7 +14,7 @@
             </tr>
         </thead>
         <tbody>
-            @forelse($riwayat as $r)
+            @forelse($riwayats as $r)
             <tr>
                 <td>{{ $r->waktu_kedatangan }}</td>
                 <td>{{ $r->keluhan ?? '-' }}</td>
@@ -28,7 +28,5 @@
             @endforelse
         </tbody>
     </table>
-
-    {{ $riwayat->links() }}
 </div>
 @endsection
