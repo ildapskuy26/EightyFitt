@@ -111,6 +111,14 @@
             </div>
 
             <div class="mb-3">
+                <label for="tempat" class="form-label">Tempat Kejadian</label>
+                    <select name="tempat" id="tempat" class="form-select">
+                        <option value="UKS">UKS</option>
+                        <option value="Upacara">Upacara</option>
+                    </select>
+            </div>
+
+            <div class="mb-3">
                 <label for="keluhan" class="form-label">Keluhan</label>
                 <textarea name="keluhan" class="form-control" rows="3" placeholder="Tuliskan keluhan siswa..."></textarea>
             </div>

@@ -3,7 +3,7 @@
 @section('content')
 
 <div class="container-fluid py-4 px-3" style="background: #f8fafc; min-height: 100vh;">
-    
+
     <!-- Header -->
     <div class="mb-4">
         <h2 class="fw-bold mb-1" style="color: #1c4f33;">Dashboard Admin</h2>
@@ -40,7 +40,7 @@
     </div>
 
     <!-- Grafik -->
-    <div class="row g-4">
+    <div class="row g-4 mb-5">
         <div class="col-lg-6">
             <div class="card border-0 shadow-sm rounded-4 fade-up">
                 <div class="card-header bg-white border-0 d-flex justify-content-between align-items-center">
@@ -65,7 +65,26 @@
             </div>
         </div>
     </div>
-</div>
+
+    <!-- Import Data Siswa -->
+    <div class="card border-0 shadow-sm rounded-4 mb-4 fade-up" style="animation-delay: 0.3s;">
+        <div class="card-body">
+            <h5 class="fw-bold mb-3 text-success"><i class="bi bi-upload me-2"></i>Import Data Siswa</h5>
+            <form action="{{ route('admin.importSiswa') }}" method="POST" enctype="multipart/form-data" class="d-flex flex-wrap gap-2">
+                @csrf
+                <input type="file" name="file" class="form-control w-auto" accept=".xlsx,.xls" required>
+                <button type="submit" class="btn btn-success d-flex align-items-center gap-2 px-3">
+                    <i class="bi bi-arrow-up-circle"></i> Import
+                </button>
+            </form>
+            @if(session('success'))
+                <div class="alert alert-success mt-3">{{ session('success') }}</div>
+            @elseif(session('error'))
+                <div class="alert alert-danger mt-3">{{ session('error') }}</div>
+            @endif
+        </div>
+    </div>
+
 
 <!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

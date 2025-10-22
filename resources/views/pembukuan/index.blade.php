@@ -102,6 +102,32 @@
         </a>
     </div>
 
+    {{-- 🔽 Tombol Export Excel --}}
+        <form action="{{ route('pembukuan.export') }}" method="GET">
+            <div class="d-flex align-items-center gap-2">
+                <select name="bulan" class="form-select form-select-sm shadow-sm" style="width: 150px;">
+                    @foreach([
+                        1=>'Januari',2=>'Februari',3=>'Maret',4=>'April',5=>'Mei',6=>'Juni',
+                        7=>'Juli',8=>'Agustus',9=>'September',10=>'Oktober',11=>'November',12=>'Desember'
+                    ] as $num => $name)
+                        <option value="{{ $num }}" {{ request('bulan') == $num ? 'selected' : '' }}>
+                            {{ $name }}
+                        </option>
+                    @endforeach
+                </select>
+                <select name="tahun" class="form-select form-select-sm shadow-sm" style="width: 100px;">
+                    @for($i = date('Y'); $i >= 2020; $i--)
+                        <option value="{{ $i }}" {{ request('tahun') == $i ? 'selected' : '' }}>{{ $i }}</option>
+                    @endfor
+                </select>
+                <button type="submit" class="btn btn-outline-success btn-sm d-flex align-items-center gap-1">
+                    <i class="bi bi-file-earmark-excel"></i> Export
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
     {{-- 🔍 Filter Section --}}
     <div class="card card-pembukuan filter-card mb-4">
         <div class="card-body">
@@ -228,7 +254,7 @@
                 <i class="bi bi-file-earmark-text display-4 text-muted"></i>
                 <h5 class="text-muted mt-3">Belum ada laporan pembukuan</h5>
                 <p class="text-muted">Buat laporan pertama Anda untuk mulai mencatat aktivitas UKS</p>
-                <a href="{{ route('pembukuan.create') }}" class="btn btn-success d-inline-flex align-items-center gap-2 mt-2">
+                <a href="{{ route('pembukuan.create') }}" class="btn btn-success d-inline-flex  gap-2 mt-2">
                     <i class="bi bi-plus-circle"></i> Buat Laporan Pertama
                 </a>
             </div>

@@ -68,6 +68,8 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+Route::resource('pembukuan', PembukuanController::class);
+
 require __DIR__.'/auth.php';
 
 // ====================
@@ -83,8 +85,14 @@ Route::middleware(['auth', 'role:admin,petugas'])->group(function () {
     Route::resource('kunjungan', KunjunganController::class);
     Route::get('/kunjungan/export/csv', [KunjunganController::class, 'exportCsv'])->name('kunjungan.export.csv');
     Route::get('/kunjungan/laporan', [KunjunganController::class, 'laporan'])->name('kunjungan.laporan');
-    Route::resource('pembukuan', PembukuanController::class);
 });
+
+Route::middleware(['auth', 'role:admin,petugas'])->group(function () {
+    Route::resource('pembukuan', PembukuanController::class);
+    Route::get('/pembukuan/export', [PembukuanController::class, 'export'])->name('pembukuan.export');
+    Route::post('/admin/import-siswa', [AdminController::class, 'importSiswa'])->name('admin.importSiswa');
+});
+
 
 // ====================
 // CRUD Obat & Berita

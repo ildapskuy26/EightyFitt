@@ -78,6 +78,7 @@ class KunjunganController extends Controller
             'keluhan'          => 'nullable|string',
             'obat_id'          => 'nullable|exists:obat,id',
             'diagnosis'        => 'required|string|max:255',
+            'tempat'           => 'required|in:UKS,Upacara',
         ]);
 
         $siswa = Siswa::where('nis', $validated['nis'])->firstOrFail();
@@ -92,6 +93,7 @@ class KunjunganController extends Controller
             'keluhan'          => $validated['keluhan'] ?? null,
             'obat_id'          => $validated['obat_id'] ?? null,
             'diagnosis'        => $validated['diagnosis'],
+            'tempat'           => $validated['tempat'],
              'petugas_id'       => Auth::id(), // <-- ini penting
         ]);
 
@@ -146,6 +148,7 @@ class KunjunganController extends Controller
             'keluhan'          => 'nullable|string',
             'obat_id'          => 'nullable|exists:obat,id',
             'diagnosis'        => 'required|string|max:255',
+            'tempat'           => 'required|in:UKS,Upacara',
         ]);
 
         $siswa = Siswa::where('nis', $validated['nis'])->firstOrFail();
@@ -160,6 +163,7 @@ class KunjunganController extends Controller
             'keluhan'          => $validated['keluhan'] ?? null,
             'obat_id'          => $validated['obat_id'] ?? null,
             'diagnosis'        => $validated['diagnosis'],
+            'tempat'           => $validated['tempat'],
              'petugas_id'       => Auth::id(), // <-- ini penting
         ]);
 

@@ -104,25 +104,36 @@
     @endif
 
     <div class="table-responsive shadow-sm fade-in">
-        <table class="table align-middle table-hover mb-0">
-            <thead class="table-light text-center">
-                <tr>
-                    <th>No</th>
-                    <th>NIS</th>
-                    <th>Nama</th>
-                    <th>Kelas</th>
-                    <th>Jurusan</th>
-                    <th>Waktu Kedatangan</th>
-                    <th>Waktu Keluar</th>
-                    <th>Keluhan</th>
-                    <th>Obat</th>
-                    <th>Status</th>
-                    <th>Aksi</th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse($kunjungan as $k)
-                <tr class="table-row-hover">
+    <table class="table align-middle table-hover mb-0">
+        <thead class="table-light text-center">
+            <tr>
+                <th>No</th>
+                <th>NIS</th>
+                <th>Nama</th>
+                <th>Kelas</th>
+                <th>Jurusan</th>
+                <th>Waktu Kedatangan</th>
+                <th>Waktu Keluar</th>
+                <th>Keluhan</th>
+                <th>Obat</th>
+                <th>Tempat</th>
+                <th>Status</th>
+                <th>Aksi</th>
+            </tr>
+        </thead>
+        <tbody>
+            @forelse($kunjungan as $k)
+                @php
+                    // Ambil data siswa terkait (pastikan relasi siswa ada di model Kunjungan)
+                    $siswa = \App\Models\Siswa::where('nis', $k->nis)->first();
+                @endphp
+
+                <tr 
+                    class="table-row-hover"
+                    @if($siswa && $siswa->riwayat_penyakit)
+                        style="background-color: #ffe5e5;" {{-- Warna merah muda untuk siswa dengan riwayat penyakit --}}
+                    @endif
+                >
                     <td>{{ $loop->iteration }}</td>
                     <td>{{ $k->nis }}</td>
                     <td class="fw-semibold">{{ $k->nama }}</td>
@@ -134,6 +145,11 @@
                     <td>
                         <span class="badge bg-success-subtle text-success border border-success px-2 py-1">
                             {{ $k->obat->nama ?? '-' }}
+                        </span>
+                    </td>
+                    <td>
+                        <span class="badge bg-info-subtle text-info border border-info px-2 py-1">
+                            {{ $k->tempat ?? 'UKS' }}
                         </span>
                     </td>
                     <td>
@@ -159,15 +175,15 @@
                         </form>
                     </td>
                 </tr>
-                @empty
+            @empty
                 <tr>
-                    <td colspan="11" class="text-center text-muted py-3">Tidak ada data kunjungan</td>
+                    <td colspan="12" class="text-center text-muted py-3">Tidak ada data kunjungan</td>
                 </tr>
-                @endforelse
-            </tbody>
-        </table>
-    </div>
+            @endforelse
+        </tbody>
+    </table>
 </div>
+
 
 <!-- Modal Filter -->
 <div class="modal fade" id="filterModal" tabindex="-1" aria-labelledby="filterModalLabel" aria-hidden="true">
