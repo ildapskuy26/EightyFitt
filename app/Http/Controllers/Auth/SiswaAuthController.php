@@ -30,7 +30,7 @@ class SiswaAuthController extends Controller
     ]);
 
     // Gunakan guard siswa
-    if (Auth::guard('siswa')->attempt($credentials, $request->filled('remember'))) {
+    if (Auth::attempt($credentials, $request->filled('remember'))) {
         $request->session()->regenerate();
         
         return redirect()->intended(route('siswa.dashboard'))->with('success', 'Login berhasil!');

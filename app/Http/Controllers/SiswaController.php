@@ -17,18 +17,6 @@ class SiswaController extends Controller
 
     public function riwayat()
     {
-        $user = Auth::guard('siswa')->user();
-
-        if (!$user) {
-            return redirect()->route('siswa.login')->with('error', 'Silakan login terlebih dahulu.');
-        }
-
-        // Ambil kunjungan siswa berdasarkan nis
-        $riwayat = Kunjungan::with('obat')
-            ->where('nis', $user->nis)
-            ->orderBy('waktu_kedatangan', 'desc')
-            ->paginate(10);
-
-        return view('siswa.riwayat', compact('riwayat'));
+        dd(Auth::check(), Auth::user(), Auth::getDefaultDriver());
     }
 }

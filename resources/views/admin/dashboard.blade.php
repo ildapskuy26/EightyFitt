@@ -2,68 +2,64 @@
 
 @section('content')
 
-<div class="container-fluid py-4 px-3 dashboard-animate" style="background: #f8fafc; min-height: 100vh;">
-    <div class="d-flex justify-content-between align-items-center mb-4 animate-up">
-        <h2 class="fw-bold text-gradient mb-0">Dashboard Admin</h2>
-        <span class="badge bg-gradient-info px-3 py-2 shadow-sm">Last Update: {{ now()->format('d M Y, H:i') }}</span>
+<div class="container-fluid py-4 px-3" style="background: #f8fafc; min-height: 100vh;">
+    
+    <!-- Header -->
+    <div class="mb-4">
+        <h2 class="fw-bold mb-1" style="color: #1c4f33;">Dashboard Admin</h2>
+        <small class="text-secondary">
+            <i class="bi bi-clock-history me-1"></i>
+            Update Terakhir: {{ now()->format('d M Y, H:i') }}
+        </small>
     </div>
 
-    <div class="row g-4">
-        <!-- Kartu Statistik -->
-        <div class="col-md-3 col-sm-6 animate-card">
-            <div class="stat-card bg-gradient-success text-white shadow-lg rounded-4 p-4">
-                <h6 class="text-uppercase mb-1 opacity-75">Total Obat</h6>
-                <h3 class="fw-bold">{{ $obat->count() }}</h3>
-                <i class="bi bi-capsule position-absolute bottom-0 end-0 m-3" style="font-size: 3rem; opacity: 0.15;"></i>
-            </div>
-        </div>
-        <div class="col-md-3 col-sm-6 animate-card">
-            <div class="stat-card bg-gradient-info text-white shadow-lg rounded-4 p-4">
-                <h6 class="text-uppercase mb-1 opacity-75">Total Kunjungan</h6>
-                <h3 class="fw-bold">{{ $kunjungan->sum('total') }}</h3>
-                <i class="bi bi-people-fill position-absolute bottom-0 end-0 m-3" style="font-size: 3rem; opacity: 0.15;"></i>
-            </div>
-        </div>
-        <div class="col-md-3 col-sm-6 animate-card">
-            <div class="stat-card bg-gradient-warning text-white shadow-lg rounded-4 p-4">
-                <h6 class="text-uppercase mb-1 opacity-75">Obat Hampir Habis</h6>
-                <h3 class="fw-bold">{{ $obat->where('stock', '<', 10)->count() }}</h3>
-                <i class="bi bi-exclamation-triangle position-absolute bottom-0 end-0 m-3" style="font-size: 3rem; opacity: 0.15;"></i>
-            </div>
-        </div>
-        <div class="col-md-3 col-sm-6 animate-card">
-            <div class="stat-card bg-gradient-danger text-white shadow-lg rounded-4 p-4">
-                <h6 class="text-uppercase mb-1 opacity-75">Kunjungan Tahun Ini</h6>
-                <h3 class="fw-bold">{{ $kunjungan->count() }}</h3>
-                <i class="bi bi-bar-chart-line position-absolute bottom-0 end-0 m-3" style="font-size: 3rem; opacity: 0.15;"></i>
-            </div>
-        </div>
-    </div>
+    <!-- Statistik Cards -->
+    <div class="row g-3 mb-4">
+        @php
+            $cards = [
+                ['title' => 'Total Obat', 'value' => $obat->count(), 'icon' => 'bi-capsule', 'color' => 'linear-gradient(135deg, #184d2b, #2f6f44)', 'route' => route('obat.index')],
+                ['title' => 'Total Kunjungan', 'value' => $kunjungan->sum('total'), 'icon' => 'bi-people-fill', 'color' => 'linear-gradient(135deg, #1e5b37, #3b8156)', 'route' => route('kunjungan.index')],
+                ['title' => 'Obat Hampir Habis', 'value' => $obat->where("stock", "<", 10)->count(), 'icon' => 'bi-exclamation-triangle', 'color' => 'linear-gradient(135deg, #447a4a, #78b478)', 'route' => route('obat.index')],
+                ['title' => 'Kunjungan Tahun Ini', 'value' => $kunjungan->count(), 'icon' => 'bi-bar-chart-line', 'color' => 'linear-gradient(135deg, #2c6c49, #4c9563)', 'route' => route('kunjungan.index')]
+            ];
+        @endphp
 
-    <div class="row g-4 mt-2">
-        <div class="col-lg-6 animate-up-delay">
-            <div class="card border-0 shadow-lg rounded-4 overflow-hidden h-100">
-                <div class="card-header bg-gradient-success text-white fw-semibold rounded-top-4 d-flex justify-content-between align-items-center">
-                    <span><i class="bi bi-capsule me-2"></i> Grafik Stok Obat</span>
-                    <a href="{{ route('obat.index') }}" class="btn btn-light btn-sm fw-semibold rounded-pill px-3">
-                        Lihat Detail
-                    </a>
+        @foreach ($cards as $index => $card)
+        <div class="col-md-3 col-6">
+            <div class="card stat-card border-0 text-white shadow-sm rounded-4 position-relative animate-card card-click"
+                 style="background: {{ $card['color'] }}; animation-delay: {{ $index * 0.15 }}s;"
+                 data-href="{{ $card['route'] }}">
+                <div class="card-body">
+                    <h6 class="text-uppercase small opacity-75">{{ $card['title'] }}</h6>
+                    <h3 class="fw-bold mb-0">{{ $card['value'] }}</h3>
+                    <i class="bi {{ $card['icon'] }} position-absolute end-0 bottom-0 pe-3 pb-2" style="font-size: 2.8rem; opacity: 0.15;"></i>
                 </div>
-                <div class="card-body bg-white">
+            </div>
+        </div>
+        @endforeach
+    </div>
+
+    <!-- Grafik -->
+    <div class="row g-4">
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm rounded-4 fade-up">
+                <div class="card-header bg-white border-0 d-flex justify-content-between align-items-center">
+                    <div class="fw-semibold text-success"><i class="bi bi-capsule me-2"></i>Grafik Stok Obat</div>
+                    <a href="{{ route('obat.index') }}" class="btn btn-success btn-sm px-3 rounded-pill fw-semibold">Lihat Detail</a>
+                </div>
+                <div class="card-body">
                     <canvas id="obatChart" height="200"></canvas>
                 </div>
             </div>
         </div>
 
-        <div class="col-lg-6 animate-up-delay">
-            <div class="card border-0 shadow-lg rounded-4 overflow-hidden h-100">
-                <div class="card-header bg-gradient-info text-white fw-semibold rounded-top-4 d-flex justify-content-between align-items-center">
-                    <span><i class="bi bi-activity me-2"></i> Grafik Kunjungan per Bulan</span>
-                    <a href="{{ route('kunjungan.index') }}" class="btn btn-light btn-sm fw-semibold rounded-pill px-3">
-                        Lihat Detail
-                    </a>
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm rounded-4 fade-up" style="animation-delay: 0.2s;">
+                <div class="card-header bg-white border-0 d-flex justify-content-between align-items-center">
+                    <div class="fw-semibold text-success"><i class="bi bi-activity me-2"></i>Grafik Kunjungan per Bulan</div>
+                    <a href="{{ route('kunjungan.index') }}" class="btn btn-success btn-sm px-3 rounded-pill fw-semibold">Lihat Detail</a>
                 </div>
-                <div class="card-body bg-white">
+                <div class="card-body">
                     <canvas id="kunjunganChart" height="200"></canvas>
                 </div>
             </div>
@@ -71,102 +67,97 @@
     </div>
 </div>
 
-<!-- Chart.js CDN -->
+<!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 
-<script>
-    const obatData = @json($obat);
-    const kunjunganData = @json($kunjungan);
-    const bulanLabels = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
-
-    // Chart: Obat
-    new Chart(document.getElementById('obatChart'), {
-        type: 'bar',
-        data: {
-            labels: obatData.map(o => o.nama),
-            datasets: [{
-                label: 'Jumlah Stok',
-                data: obatData.map(o => o.stock),
-                backgroundColor: obatData.map(() => 'rgba(25, 135, 84, 0.8)'),
-                borderRadius: 8,
-                borderSkipped: false,
-            }]
-        },
-        options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
-    });
-
-    // Chart: Kunjungan
-    new Chart(document.getElementById('kunjunganChart'), {
-        type: 'line',
-        data: {
-            labels: kunjunganData.map(k => bulanLabels[k.bulan - 1]),
-            datasets: [{
-                label: 'Jumlah Kunjungan',
-                data: kunjunganData.map(k => k.total),
-                borderColor: 'rgba(13,110,253,1)',
-                backgroundColor: 'rgba(13,110,253,0.15)',
-                fill: true,
-                tension: 0.35,
-                pointRadius: 5,
-                pointHoverRadius: 7,
-                pointBackgroundColor: '#0d6efd',
-                borderWidth: 3,
-            }]
-        },
-        options: { plugins: { legend: { display: true } }, scales: { y: { beginAtZero: true } } }
-    });
-
-    // Animasi masuk
-    document.addEventListener("DOMContentLoaded", () => {
-        document.querySelectorAll('.animate-card, .animate-up, .animate-up-delay').forEach((el, i) => {
-            el.style.opacity = 0;
-            el.style.transform = 'translateY(30px)';
-            setTimeout(() => {
-                el.style.transition = 'all 0.8s ease';
-                el.style.opacity = 1;
-                el.style.transform = 'translateY(0)';
-            }, 150 * i);
-        });
-    });
-</script>
-
+<!-- Animasi CSS & Efek Klik -->
 <style>
-/* Gradient Background */
-.bg-gradient-success { background: linear-gradient(135deg, #1e8449, #28b463); }
-.bg-gradient-info { background: linear-gradient(135deg, #0dcaf0, #0d6efd); }
-.bg-gradient-warning { background: linear-gradient(135deg, #ffc107, #ffb347); }
-.bg-gradient-danger { background: linear-gradient(135deg, #dc3545, #ff6b6b); }
-
-/* Text Gradient */
-.text-gradient {
-    background: linear-gradient(90deg, #198754, #0d6efd);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(25px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
-/* Card Hover */
+.animate-card { opacity: 0; animation: fadeUp 0.8s ease forwards; }
+.fade-up { opacity: 0; animation: fadeUp 0.9s ease forwards; }
+
 .stat-card {
-    position: relative;
-    overflow: hidden;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+    transition: all 0.3s ease;
 }
+
 .stat-card:hover {
     transform: translateY(-6px);
     box-shadow: 0 8px 20px rgba(0,0,0,0.15);
 }
 
-/* Entry Animation Base */
-.animate-up, .animate-card, .animate-up-delay {
-    opacity: 0;
-    transform: translateY(20px);
+.stat-card:active {
+    transform: scale(0.97);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.25);
 }
-.dashboard-animate {
-    animation: fadeInBody 0.8s ease;
-}
-@keyframes fadeInBody {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
+
+.animate-card:nth-child(1) { animation-delay: 0.1s; }
+.animate-card:nth-child(2) { animation-delay: 0.25s; }
+.animate-card:nth-child(3) { animation-delay: 0.4s; }
+.animate-card:nth-child(4) { animation-delay: 0.55s; }
 </style>
+
+<!-- Klik Efek Script -->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll(".card-click").forEach(card => {
+        card.addEventListener("click", () => {
+            card.classList.add("clicked");
+            setTimeout(() => {
+                window.location.href = card.dataset.href;
+            }, 180);
+        });
+    });
+});
+
+const obatData = @json($obat);
+const kunjunganData = @json($kunjungan);
+const bulanLabels = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+
+// Grafik Obat
+new Chart(document.getElementById('obatChart'), {
+    type: 'bar',
+    data: {
+        labels: obatData.map(o => o.nama),
+        datasets: [{
+            label: 'Jumlah Stok',
+            data: obatData.map(o => o.stock),
+            backgroundColor: '#2e8b57',
+            borderRadius: 8,
+            borderSkipped: false
+        }]
+    },
+    options: {
+        plugins: { legend: { display: false } },
+        scales: { y: { beginAtZero: true } }
+    }
+});
+
+// Grafik Kunjungan
+new Chart(document.getElementById('kunjunganChart'), {
+    type: 'line',
+    data: {
+        labels: kunjunganData.map(k => bulanLabels[k.bulan - 1]),
+        datasets: [{
+            label: 'Jumlah Kunjungan',
+            data: kunjunganData.map(k => k.total),
+            borderColor: '#2e8b57',
+            backgroundColor: 'rgba(46,139,87,0.15)',
+            fill: true,
+            tension: 0.3,
+            pointRadius: 5,
+            borderWidth: 3
+        }]
+    },
+    options: {
+        plugins: { legend: { display: true } },
+        scales: { y: { beginAtZero: true } }
+    }
+});
+</script>
 @endsection

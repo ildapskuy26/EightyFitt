@@ -17,12 +17,19 @@ class Obat extends Model
         'jenis_obat',
         'bentuk_obat',
         'dosis_per_hari',
-        'stock'
+        'stock',
+        'kadar',
+        'stok_terpakai',
     ];
 
     // Relasi ke Kunjungan
     public function kunjungan()
     {
         return $this->hasMany(Kunjungan::class);
+    }
+
+    public function getStokTersisaAttribute()
+    {
+        return $this->stock - $this->stok_terpakai;
     }
 }

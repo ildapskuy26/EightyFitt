@@ -11,4 +11,15 @@ class Berita extends Model
 
     protected $table = 'berita';
     protected $fillable = ['judul', 'isi', 'gambar'];
+
+    public function likes()
+    {
+        return $this->hasMany(Like::class);
+    }
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
+
 }

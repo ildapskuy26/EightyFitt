@@ -6,7 +6,6 @@ use App\Models\Berita;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
-
 class BeritaController extends Controller
 {
     public function index()
@@ -34,6 +33,9 @@ class BeritaController extends Controller
             $data['gambar'] = $request->file('gambar')->store('berita', 'public');
         }
 
+        // Tambahkan kolom 'views' default 0
+        $data['views'] = 0;
+
         Berita::create($data);
 
         return redirect()->route('berita.index')->with('success', 'Berita berhasil ditambahkan!');
@@ -41,6 +43,15 @@ class BeritaController extends Controller
 
     public function show(Berita $berita)
     {
+        // === Tambahkan logika untuk hitung view ===
+        $sessionKey = 'berita_viewed_' . $berita->id;
+
+        // Hanya tambahkan 1 kali per sesi user
+        if (!session()->has($sessionKey)) {
+            $berita->increment('views');
+            session([$sessionKey => true]);
+        }
+
         return view('berita.show', compact('berita'));
     }
 
@@ -73,6 +84,7 @@ class BeritaController extends Controller
         if ($berita->gambar) {
             Storage::disk('public')->delete($berita->gambar);
         }
+
         $berita->delete();
 
         return redirect()->route('berita.index')->with('success', 'Berita berhasil dihapus!');

@@ -1,154 +1,206 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container py-4 fade-in-up">
+<div class="container-fluid px-4 py-5 bg-gradient-light">
 
-    {{-- ✨ Tombol tambah berita (hanya admin/petugas) --}}
-    @auth
-        @if(in_array(auth()->user()->role, ['admin','petugas']))
-            <div class="d-flex justify-content-end mb-4">
-                <a href="{{ route('berita.create') }}" 
-                   class="btn btn-primary shadow-sm d-flex align-items-center gap-2 btn-hover-animate">
-                    <i class="bi bi-plus-circle"></i> Tambah Berita
-                </a>
+    {{-- ✨ Hero Header Section --}}
+    <div class="row justify-content-center mb-5">
+        <div class="col-lg-10 text-center">
+            <div class="hero-header animate-fade-in">
+                <h1 class="display-4 fw-bold text-gradient-primary mb-3">Berita Terbaru</h1>
+                <p class="lead text-muted mb-4">
+                    @if(in_array(auth()->user()->role, ['admin','petugas']))
+                        Kelola berita terbaru untuk ditampilkan kepada siswa dan guru.
+                    @else
+                        Temukan informasi dan berita terbaru dari UKS.
+                    @endif
+                </p>
+
+                {{-- Tombol tambah berita --}}
+                @auth
+                    @if(in_array(auth()->user()->role, ['admin','petugas']))
+                        <a href="{{ route('berita.create') }}" 
+                           class="btn btn-primary btn-lg shadow-lg rounded-pill px-4 py-2 d-inline-flex align-items-center gap-2 btn-hover-lift">
+                            <i class="bi bi-plus-circle-fill"></i> 
+                            <span>Tambah Berita Baru</span>
+                        </a>
+                    @endif
+                @endauth
             </div>
-        @endif
-    @endauth
+        </div>
+    </div>
 
     {{-- 📰 Daftar Berita --}}
-    @forelse($berita as $b)
-        <div class="card mb-4 border-0 shadow-sm rounded-4 overflow-hidden hover-card card-animate">
-            <div class="row g-0">
-                {{-- Gambar berita --}}
-                @if($b->gambar)
-                    <div class="col-md-4">
-                        <img src="{{ asset('storage/'.$b->gambar) }}" 
-                             class="img-fluid w-100 h-100 object-fit-cover" 
-                             alt="Gambar Berita"
-                             style="min-height:220px;">
-                    </div>
-                @endif
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            @forelse($berita as $b)
+                <div class="news-card card border-0 shadow-lg rounded-4 overflow-hidden mb-5 animate-slide-up" 
+                     style="animation-delay: {{ $loop->index * 0.1 }}s">
+                    <div class="row g-0">
+                        {{-- Gambar --}}
+                        @if($b->gambar)
+                            <div class="col-md-5 position-relative">
+                                <img src="{{ asset('storage/'.$b->gambar) }}" 
+                                     class="img-fluid w-100 h-100 news-image" 
+                                     alt="Gambar Berita"
+                                     style="min-height: 280px; object-fit: cover;">
+                                <div class="image-overlay"></div>
+                            </div>
+                        @endif
 
-                {{-- Konten berita --}}
-                <div class="{{ $b->gambar ? 'col-md-8' : 'col-md-12' }}">
-                    <div class="card-body d-flex flex-column justify-content-between h-100 p-4">
-                        <div>
-                            <h4 class="card-title fw-bold text-gradient mb-2">
-                                {{ $b->judul }}
-                            </h4>
-                            <p class="card-text text-muted small mb-2">
-                                <i class="bi bi-calendar-event"></i> {{ $b->created_at->format('d M Y') }}
-                            </p>
-                            <p class="card-text text-secondary">{{ Str::limit($b->isi, 160) }}</p>
-                        </div>
+                        {{-- Konten --}}
+                        <div class="{{ $b->gambar ? 'col-md-7' : 'col-12' }}">
+                            <div class="card-body d-flex flex-column justify-content-between h-100 p-4 p-lg-5">
 
-                        {{-- Tombol Aksi --}}
-                        <div class="mt-3 d-flex flex-wrap gap-2">
-                            <a href="{{ route('berita.show', $b->id) }}" 
-                               class="btn btn-sm btn-info shadow-sm d-flex align-items-center gap-1 btn-hover-animate">
-                                <i class="bi bi-eye-fill"></i> Baca
-                            </a>
+                                {{-- 🧾 Info --}}
+                                <div>
+                                    <div class="d-flex align-items-center flex-wrap gap-4 mb-3 small text-muted info-meta">
+                                        <div class="d-flex align-items-center">
+                                            <i class="bi bi-calendar-event me-2 icon-muted"></i>
+                                            {{ $b->created_at->format('d F Y') }}
+                                        </div>
+                                        <div class="d-flex align-items-center">
+                                            <i class="bi bi-person-circle me-2 icon-muted"></i>
+                                            Admin
+                                        </div>
+                                        <div class="d-flex align-items-center">
+                                            <i class="bi bi-eye me-2 icon-muted"></i>
+                                            {{ $b->views }} kali dibaca
+                                        </div>
+                                    </div>
 
-                            @auth
-                                @if(in_array(auth()->user()->role, ['admin','petugas']))
-                                    <a href="{{ route('berita.edit', $b->id) }}" 
-                                       class="btn btn-sm btn-warning shadow-sm d-flex align-items-center gap-1 btn-hover-animate">
-                                        <i class="bi bi-pencil-square"></i> Edit
-                                    </a>
+                                    {{-- Judul & deskripsi --}}
+                                    <h3 class="card-title fw-bold text-dark mb-3 line-clamp-2 hover-title">
+                                        {{ $b->judul }}
+                                    </h3>
+                                    <p class="card-text text-secondary mb-4 line-clamp-3">
+                                        {{ $b->deskripsi ?? Str::limit(strip_tags($b->isi), 200) }}
+                                    </p>
+                                </div>
 
-                                    <form action="{{ route('berita.destroy', $b->id) }}" method="POST" class="d-inline">
-                                        @csrf @method('DELETE')
-                                        <button class="btn btn-sm btn-danger shadow-sm d-flex align-items-center gap-1 btn-hover-animate"
-                                                onclick="return confirm('Hapus berita ini?')">
-                                            <i class="bi bi-trash-fill"></i> Hapus
-                                        </button>
-                                    </form>
-                                @endif
-                            @endauth
+                                {{-- Tombol Aksi --}}
+                                <div class="d-flex flex-wrap justify-content-between align-items-center pt-3 border-top">
+                                    @auth
+                                        @if(in_array(auth()->user()->role, ['admin','petugas']))
+                                            <div class="d-flex gap-2">
+                                                <a href="{{ route('berita.edit', $b->id) }}" 
+                                                   class="btn btn-outline-warning rounded-pill px-3 py-2 d-flex align-items-center gap-1 btn-hover-lift">
+                                                    <i class="bi bi-pencil-square"></i> <span>Edit</span>
+                                                </a>
+                                                <form action="{{ route('berita.destroy', $b->id) }}" method="POST" class="d-inline">
+                                                    @csrf @method('DELETE')
+                                                    <button class="btn btn-outline-danger rounded-pill px-3 py-2 d-flex align-items-center gap-1 btn-hover-lift"
+                                                            onclick="return confirm('Yakin ingin menghapus berita ini?')">
+                                                        <i class="bi bi-trash-fill"></i> <span>Hapus</span>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        @else
+                                            <a href="{{ route('berita.show', $b->id) }}" 
+                                               class="btn btn-primary rounded-pill px-4 py-2 d-flex align-items-center gap-2 btn-hover-lift">
+                                                <i class="bi bi-eye-fill"></i> 
+                                                <span>Baca Selengkapnya</span>
+                                            </a>
+                                        @endif
+                                    @endauth
+                                </div>
+
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            @empty
+                {{-- Jika belum ada berita --}}
+                <div class="empty-state text-center py-5 my-5 animate-fade-in">
+                    <div class="empty-icon mb-4">
+                        <i class="bi bi-newspaper display-1 text-muted opacity-25"></i>
+                    </div>
+                    <h4 class="fw-bold text-muted mb-3">Belum Ada Berita</h4>
+                    <p class="text-muted mb-4">Saat ini belum ada berita yang tersedia.</p>
+                    @auth
+                        @if(in_array(auth()->user()->role, ['admin','petugas']))
+                            <a href="{{ route('berita.create') }}" 
+                               class="btn btn-primary btn-lg rounded-pill px-4 py-2 d-inline-flex align-items-center gap-2">
+                                <i class="bi bi-plus-circle"></i> 
+                                <span>Buat Berita Pertama</span>
+                            </a>
+                        @endif
+                    @endauth
+                </div>
+            @endforelse
         </div>
-    @empty
-        <div class="alert alert-info text-center shadow-sm animate-alert">
-            <i class="bi bi-info-circle-fill"></i> Belum ada berita.
-        </div>
-    @endforelse
+    </div>
 
     {{-- 📄 Pagination --}}
-    <div class="d-flex justify-content-center mt-4">
-        {{ $berita->links('pagination::bootstrap-5') }}
-    </div>
+    @if($berita->hasPages())
+        <div class="row justify-content-center mt-5">
+            <div class="col-lg-10">
+                <div class="pagination-wrapper bg-white rounded-4 shadow-sm p-4 animate-fade-in">
+                    {{ $berita->links('pagination::bootstrap-5') }}
+                </div>
+            </div>
+        </div>
+    @endif
 </div>
 
-{{-- 🌈 CSS Custom --}}
+{{-- 🌈 CSS --}}
 <style>
-    /* Gradient teks */
-    .text-gradient {
-        background: linear-gradient(90deg, #007bff, #20c997);
+    .bg-gradient-light {
+        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+        min-height: 100vh;
+    }
+    .text-gradient-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
     }
-
-    /* Efek fade-in saat halaman dibuka */
-    .fade-in-up {
+    .news-card {
+        transition: all 0.4s ease;
+        background: #fff;
+    }
+    .news-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 18px 35px rgba(0,0,0,0.12);
+    }
+    .image-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(45deg, rgba(0,0,0,0.15), transparent);
         opacity: 0;
-        transform: translateY(20px);
-        animation: fadeInUp 0.8s ease forwards;
+        transition: opacity 0.3s ease;
     }
-    @keyframes fadeInUp {
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
+    .news-card:hover .image-overlay {
+        opacity: 1;
     }
-
-    /* Efek hover card */
-    .hover-card {
+    .btn-hover-lift {
         transition: all 0.3s ease;
-        background-color: #fff;
     }
-    .hover-card:hover {
-        transform: translateY(-6px);
-        box-shadow: 0 10px 25px rgba(0,0,0,0.12) !important;
+    .btn-hover-lift:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 20px rgba(0,0,0,0.15);
     }
-
-    /* Efek hover tombol */
-    .btn-hover-animate {
-        transition: all 0.25s ease-in-out;
+    .icon-muted {
+        color: #6c757d;
     }
-    .btn-hover-animate:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    .info-meta div {
+        display: flex;
+        align-items: center;
     }
-
-    /* Efek animasi tiap kartu */
-    .card-animate {
-        animation: slideUp 0.6s ease forwards;
-        opacity: 0;
+    .hover-title:hover {
+        color: #0056b3;
+        transition: color 0.3s ease;
     }
-    .card-animate:nth-child(1) { animation-delay: 0.1s; }
-    .card-animate:nth-child(2) { animation-delay: 0.2s; }
-    .card-animate:nth-child(3) { animation-delay: 0.3s; }
-    .card-animate:nth-child(4) { animation-delay: 0.4s; }
-
-    @keyframes slideUp {
-        from { transform: translateY(30px); opacity: 0; }
-        to { transform: translateY(0); opacity: 1; }
+    .line-clamp-2, .line-clamp-3 {
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
     }
-
-    /* Alert muncul lembut */
-    .animate-alert {
-        animation: popIn 0.5s ease;
-    }
-    @keyframes popIn {
-        from { transform: scale(0.9); opacity: 0; }
-        to { transform: scale(1); opacity: 1; }
-    }
-
-    .object-fit-cover {
-        object-fit: cover;
+    .line-clamp-2 { -webkit-line-clamp: 2; }
+    .line-clamp-3 { -webkit-line-clamp: 3; }
+    .empty-state {
+        background: rgba(255,255,255,0.85);
+        border-radius: 20px;
+        backdrop-filter: blur(8px);
     }
 </style>
 @endsection

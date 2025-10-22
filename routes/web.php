@@ -13,6 +13,9 @@ use App\Http\Controllers\SiswaManagementController;
 use App\Http\Controllers\KontakController;
 use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\Auth\SiswaAuthController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\PembukuanController;
+use App\Http\Controllers\LikeCommentController;
 
 // ====================
 // Halaman Utama
@@ -48,9 +51,13 @@ Route::prefix('siswa')->name('siswa.')->group(function () {
 // ====================
 // Dashboard umum (user default, mis. admin/petugas)
 // ====================
-Route::get('/dashboard', fn() => view('dashboard'))
+Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
+
+Route::get('/', function () {
+    return view('/auth/login');
+})->name('home');
 
 // ====================
 // Profile (user default, bukan siswa)
@@ -76,6 +83,7 @@ Route::middleware(['auth', 'role:admin,petugas'])->group(function () {
     Route::resource('kunjungan', KunjunganController::class);
     Route::get('/kunjungan/export/csv', [KunjunganController::class, 'exportCsv'])->name('kunjungan.export.csv');
     Route::get('/kunjungan/laporan', [KunjunganController::class, 'laporan'])->name('kunjungan.laporan');
+    Route::resource('pembukuan', PembukuanController::class);
 });
 
 // ====================
@@ -83,6 +91,9 @@ Route::middleware(['auth', 'role:admin,petugas'])->group(function () {
 // ====================
 Route::resource('obat', ObatController::class);
 Route::resource('berita', BeritaController::class)->parameters(['berita' => 'berita']);
+
+Route::post('/berita/{berita}/like', [LikeCommentController::class, 'toggleLike'])->name('berita.like');
+Route::post('/berita/{berita}/comment', [LikeCommentController::class, 'addComment'])->name('berita.comment');
 
 // ====================
 // Manajemen Petugas & Siswa (khusus admin)
@@ -97,3 +108,8 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 // ====================
 Route::get('auth/google', [GoogleController::class, 'redirect'])->name('google.login');
 Route::get('auth/google/callback', [GoogleController::class, 'callback']);
+
+use App\Http\Controllers\Auth\LoginController;
+
+Route::get('auth/google', [LoginController::class, 'redirectToGoogle'])->name('google.login');
+Route::get('auth/google/callback', [LoginController::class, 'handleGoogleCallback']);
