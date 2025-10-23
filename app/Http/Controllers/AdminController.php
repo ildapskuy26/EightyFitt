@@ -8,6 +8,7 @@ use App\Models\Kunjungan;
 use App\Models\Siswa;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use Illuminate\Support\Facades\DB;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
 
 class AdminController extends Controller
 {
@@ -21,39 +22,87 @@ class AdminController extends Controller
     }
 
     public function importSiswa(Request $request)
-    {
-        $request->validate([
-            'file' => 'required|mimes:xlsx,xls'
-        ]);
+{
+    $request->validate([
+        'files' => 'required',
+        'files.*' => 'mimes:xlsx,xls,csv'
+    ]);
 
-        try {
-            $file = $request->file('file');
-            $spreadsheet = IOFactory::load($file->getRealPath());
-            $sheet = $spreadsheet->getActiveSheet();
-            $rows = $sheet->toArray(null, true, true, true);
+    try {
+        DB::beginTransaction();
+        $totalImported = 0;
 
-            DB::beginTransaction();
+        foreach ($request->file('files') as $file) {
+            $extension = $file->getClientOriginalExtension();
 
-            // Lewati baris pertama (header)
-            foreach ($rows as $index => $row) {
-                if ($index == 1) continue;
+            if ($extension === 'csv') {
+                // === Jika format CSV ===
+                $handle = fopen($file->getRealPath(), 'r');
+                $header = true;
+                while (($row = fgetcsv($handle, 1000, ',')) !== false) {
+                    if ($header) {
+                        $header = false;
+                        continue; // skip baris header
+                    }
 
-                Siswa::updateOrCreate(
-                    ['nis' => $row['A']], // kolom A = NIS
-                    [
-                        'nama' => $row['B'] ?? null,
-                        'kelas' => $row['C'] ?? null,
-                        'jurusan' => $row['D'] ?? null,
-                        'riwayat_penyakit' => $row['E'] ?? null,
-                    ]
-                );
+                    $nis = trim($row[0] ?? '');
+                    $nama = trim($row[1] ?? '');
+                    $kelas = trim($row[2] ?? '');
+                    $jurusan = trim($row[3] ?? '');
+
+                    if (empty($nis) || str_contains(strtolower($nis), 'tahun pelajaran')) continue;
+                    $nis = substr($nis, 0, 20);
+
+                    \App\Models\Siswa::updateOrCreate(
+                        ['nis' => $nis],
+                        [
+                            'nama' => $nama,
+                            'kelas' => $kelas,
+                            'jurusan' => $jurusan,
+                            'riwayat_penyakit' => null,
+                        ]
+                    );
+                    $totalImported++;
+                }
+                fclose($handle);
+            } else {
+                // === Jika format Excel (xls/xlsx) ===
+                $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($file->getRealPath());
+                $sheet = $spreadsheet->getActiveSheet();
+                $rows = $sheet->toArray(null, true, true, true);
+
+                foreach ($rows as $index => $row) {
+                    if ($index == 1) continue; // skip header
+
+                    $nis = trim($row['A'] ?? '');
+                    $nama = trim($row['B'] ?? '');
+                    $kelas = trim($row['C'] ?? '');
+                    $jurusan = trim($row['D'] ?? '');
+
+                    if (empty($nis) || str_contains(strtolower($nis), 'tahun pelajaran')) continue;
+                    $nis = substr($nis, 0, 20);
+
+                    \App\Models\Siswa::updateOrCreate(
+                        ['nis' => $nis],
+                        [
+                            'nama' => $nama,
+                            'kelas' => $kelas,
+                            'jurusan' => $jurusan,
+                            'riwayat_penyakit' => null,
+                        ]
+                    );
+                    $totalImported++;
+                }
             }
-
-            DB::commit();
-            return back()->with('success', 'Data siswa berhasil diimport!');
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return back()->with('error', 'Gagal mengimport data: ' . $e->getMessage());
         }
+
+        DB::commit();
+        return back()->with('success', "✅ Import berhasil! Total: {$totalImported} siswa.");
+    } catch (\Exception $e) {
+        DB::rollBack();
+        return back()->with('error', '❌ Gagal import data: ' . $e->getMessage());
     }
+}
+
+
 }

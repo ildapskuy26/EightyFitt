@@ -67,23 +67,28 @@
     </div>
 
     <!-- Import Data Siswa -->
-    <div class="card border-0 shadow-sm rounded-4 mb-4 fade-up" style="animation-delay: 0.3s;">
-        <div class="card-body">
-            <h5 class="fw-bold mb-3 text-success"><i class="bi bi-upload me-2"></i>Import Data Siswa</h5>
-            <form action="{{ route('admin.importSiswa') }}" method="POST" enctype="multipart/form-data" class="d-flex flex-wrap gap-2">
-                @csrf
-                <input type="file" name="file" class="form-control w-auto" accept=".xlsx,.xls" required>
-                <button type="submit" class="btn btn-success d-flex align-items-center gap-2 px-3">
-                    <i class="bi bi-arrow-up-circle"></i> Import
-                </button>
-            </form>
-            @if(session('success'))
-                <div class="alert alert-success mt-3">{{ session('success') }}</div>
-            @elseif(session('error'))
-                <div class="alert alert-danger mt-3">{{ session('error') }}</div>
-            @endif
-        </div>
+<div class="card border-0 shadow-sm rounded-4 mb-4 fade-up" style="animation-delay: 0.3s;">
+    <div class="card-body">
+        <h5 class="fw-bold mb-3 text-success">
+            <i class="bi bi-upload me-2"></i> Import Data Siswa (Multi File)
+        </h5>
+
+        <form action="{{ route('admin.importSiswa') }}" method="POST" enctype="multipart/form-data" class="d-flex flex-column gap-3">
+            @csrf
+            <input type="file" name="files[]" class="form-control" accept=".xlsx,.xls" multiple required>
+            <button type="submit" class="btn btn-success d-flex align-items-center gap-2 w-auto">
+                <i class="bi bi-arrow-up-circle"></i> Import Semua
+            </button>
+        </form>
+
+        @if(session('success'))
+            <div class="alert alert-success mt-3">{{ session('success') }}</div>
+        @elseif(session('error'))
+            <div class="alert alert-danger mt-3">{{ session('error') }}</div>
+        @endif
     </div>
+</div>
+
 
 
 <!-- Chart.js -->

@@ -89,7 +89,7 @@ Route::middleware(['auth', 'role:admin,petugas'])->group(function () {
 
 Route::middleware(['auth', 'role:admin,petugas'])->group(function () {
     Route::resource('pembukuan', PembukuanController::class);
-    Route::get('/pembukuan/export', [PembukuanController::class, 'export'])->name('pembukuan.export');
+    Route::get('/pembukuan/{id}/export', [PembukuanController::class, 'export'])->name('pembukuan.export');
     Route::post('/admin/import-siswa', [AdminController::class, 'importSiswa'])->name('admin.importSiswa');
 });
 

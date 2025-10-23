@@ -148,97 +148,60 @@ class PembukuanController extends Controller
     }
 
     // Export Excel
-    public function exportExcel(Request $request)
+    public function export($id)
     {
-        // Ambil bulan & tahun dari request
-        $bulan = $request->input('bulan', now()->format('m'));
-        $tahun = $request->input('tahun', now()->format('Y'));
+        // Ambil laporan pembukuan
+        $pembukuan = Pembukuan::findOrFail($id);
 
-        // Ambil data kunjungan sesuai bulan
-        $kunjungan = DB::table('kunjungan')
-            ->select(
-                DB::raw('DATE(waktu_kedatangan) as tanggal'),
-                'nis',
-                'nama_siswa',
-                'kelas',
-                'keluhan',
-                'obat_diberikan',
-                'tempat',
-                'waktu_kedatangan',
-                'waktu_keluar'
-            )
-            ->whereYear('tanggal', $tahun)
-            ->whereMonth('tanggal', $bulan)
-            ->orderBy('tanggal', 'asc')
+        // Ambil data kunjungan sesuai periode laporan ini
+        $bulan = $pembukuan->periode->format('m');
+        $tahun = $pembukuan->periode->format('Y');
+
+        $kunjungan = Kunjungan::whereMonth('waktu_kedatangan', $bulan)
+            ->whereYear('waktu_kedatangan', $tahun)
+            ->orderBy('waktu_kedatangan')
             ->get();
 
-        if ($kunjungan->isEmpty()) {
-            return redirect()->back()->with('error', 'Tidak ada data kunjungan pada bulan ini.');
-        }
-
-        // Buat spreadsheet baru
+        // Buat spreadsheet
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
-        $namaBulan = Carbon::createFromDate($tahun, $bulan)->translatedFormat('F Y');
-        $sheet->setTitle('Rekap ' . $namaBulan);
+        $sheet->setTitle("Pembukuan-$bulan-$tahun");
 
         // Header kolom
-        $headers = [
-            'A' => 'Minggu Ke',
-            'B' => 'Tanggal',
-            'C' => 'NIS',
-            'D' => 'Nama Siswa',
-            'E' => 'Kelas',
-            'F' => 'Waktu Kedatangan',
-            'G' => 'Waktu Keluar',
-            'H' => 'Keluhan',
-            'I' => 'Obat Diberikan',
-            'J' => 'Tempat',
-        ];
+        $sheet->setCellValue('A1', 'Minggu');
+        $sheet->setCellValue('B1', 'NIS');
+        $sheet->setCellValue('C1', 'Nama');
+        $sheet->setCellValue('D1', 'Kelas');
+        $sheet->setCellValue('E1', 'Jurusan');
+        $sheet->setCellValue('F1', 'Waktu Kedatangan');
+        $sheet->setCellValue('G1', 'Waktu Keluar');
+        $sheet->setCellValue('H1', 'Keluhan');
+        $sheet->setCellValue('I1', 'Obat');
 
-        $sheet->getStyle('A1:J1')->getFont()->setBold(true);
-        foreach ($headers as $col => $title) {
-            $sheet->setCellValue($col . '1', $title);
-        }
-
-        // Kelompokkan per minggu
-        $grouped = $kunjungan->groupBy(function ($item) {
-            $tanggal = Carbon::parse($item->tanggal);
-            return ceil($tanggal->weekOfMonth); // minggu ke-n dalam bulan
-        });
-
+        // Isi data
         $row = 2;
-        foreach ($grouped as $minggu => $dataMinggu) {
-            foreach ($dataMinggu as $d) {
-                $sheet->setCellValue('A' . $row, 'Minggu ke-' . $minggu);
-                $sheet->setCellValue('B' . $row, Carbon::parse($d->tanggal)->format('d/m/Y'));
-                $sheet->setCellValue('C' . $row, $d->nis);
-                $sheet->setCellValue('D' . $row, $d->nama_siswa);
-                $sheet->setCellValue('E' . $row, $d->kelas);
-                $sheet->setCellValue('F' . $row, $d->waktu_kedatangan ?? '-');
-                $sheet->setCellValue('G' . $row, $d->waktu_keluar ?? '-');
-                $sheet->setCellValue('H' . $row, $d->keluhan ?? '-');
-                $sheet->setCellValue('I' . $row, $d->obat_diberikan ?? '-');
-                $sheet->setCellValue('J' . $row, ucfirst($d->tempat ?? '-'));
-                $row++;
-            }
+        foreach ($kunjungan as $k) {
+            $mingguKe = ceil(Carbon::parse($k->waktu_kedatangan)->day / 7);
 
-            // Tambahkan baris kosong antar minggu
+            $sheet->setCellValue("A{$row}", "Minggu ke-{$mingguKe}");
+            $sheet->setCellValue("B{$row}", $k->nis);
+            $sheet->setCellValue("C{$row}", $k->nama);
+            $sheet->setCellValue("D{$row}", $k->kelas);
+            $sheet->setCellValue("E{$row}", $k->jurusan);
+            $sheet->setCellValue("F{$row}", $k->waktu_kedatangan);
+            $sheet->setCellValue("G{$row}", $k->waktu_keluar);
+            $sheet->setCellValue("H{$row}", $k->keluhan);
+            $sheet->setCellValue("I{$row}", $k->obat->nama ?? '-');
             $row++;
         }
 
-        // Otomatis sesuaikan lebar kolom
-        foreach (range('A', 'J') as $col) {
-            $sheet->getColumnDimension($col)->setAutoSize(true);
-        }
-
-        // Buat nama file
-        $fileName = 'Rekap_Pembukuan_' . str_replace(' ', '_', $namaBulan) . '.xlsx';
-        $filePath = storage_path($fileName);
-
+        // Simpan ke file download
         $writer = new Xlsx($spreadsheet);
-        $writer->save($filePath);
+        $filename = "Laporan-UKS-{$bulan}-{$tahun}.xlsx";
 
-        return Response::download($filePath)->deleteFileAfterSend(true);
-    }
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header("Content-Disposition: attachment; filename=\"$filename\"");
+        $writer->save('php://output');
+        exit;
+}
 }

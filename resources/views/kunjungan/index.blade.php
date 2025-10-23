@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
+<!-- ===== Style Halaman ===== -->
 <style>
     /* ===== Animasi masuk halaman ===== */
     .fade-in {
@@ -69,9 +70,17 @@
     .modal-footer { border-top: none; background-color: #f8f9fa; border-radius: 0 0 15px 15px; }
 </style>
 
+<!-- ===== Notifikasi ===== -->
 @if(session('warning'))
 <div class="alert alert-warning fade-in shadow-sm">
     <i class="bi bi-exclamation-triangle-fill me-2"></i>{{ session('warning') }}
+</div>
+@endif
+
+@if(session('success'))
+<div class="alert alert-success alert-dismissible fade show shadow-sm fade-in" role="alert">
+    <i class="bi bi-check-circle-fill me-2"></i>{{ session('success') }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
 </div>
 @endif
 
@@ -86,106 +95,98 @@
             </a>
 
             <!-- Tombol buka modal ekspor -->
-            <button type="button" class="btn btn-info shadow-sm text-white" onclick="openCsvModal()">
+            <button type="button" class="btn btn-info shadow-sm text-white" data-bs-toggle="modal" data-bs-target="#csvModal">
                 <i class="bi bi-file-earmark-arrow-down me-1"></i> Ekspor CSV
             </button>
 
-            <button type="button" onclick="openFilterModal()" class="btn btn-warning shadow-sm text-dark">
+            <!-- Tombol buka modal filter -->
+            <button type="button" class="btn btn-warning shadow-sm text-dark" data-bs-toggle="modal" data-bs-target="#filterModal">
                 <i class="bi bi-funnel-fill me-1"></i> Filter
             </button>
         </div>
     </div>
 
-    @if(session('success'))
-    <div class="alert alert-success alert-dismissible fade show shadow-sm fade-in" role="alert">
-        <i class="bi bi-check-circle-fill me-2"></i>{{ session('success') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    </div>
-    @endif
-
+    <!-- ===== Tabel Kunjungan ===== -->
     <div class="table-responsive shadow-sm fade-in">
-    <table class="table align-middle table-hover mb-0">
-        <thead class="table-light text-center">
-            <tr>
-                <th>No</th>
-                <th>NIS</th>
-                <th>Nama</th>
-                <th>Kelas</th>
-                <th>Jurusan</th>
-                <th>Waktu Kedatangan</th>
-                <th>Waktu Keluar</th>
-                <th>Keluhan</th>
-                <th>Obat</th>
-                <th>Tempat</th>
-                <th>Status</th>
-                <th>Aksi</th>
-            </tr>
-        </thead>
-        <tbody>
-            @forelse($kunjungan as $k)
-                @php
-                    // Ambil data siswa terkait (pastikan relasi siswa ada di model Kunjungan)
-                    $siswa = \App\Models\Siswa::where('nis', $k->nis)->first();
-                @endphp
-
-                <tr 
-                    class="table-row-hover"
-                    @if($siswa && $siswa->riwayat_penyakit)
-                        style="background-color: #ffe5e5;" {{-- Warna merah muda untuk siswa dengan riwayat penyakit --}}
-                    @endif
-                >
-                    <td>{{ $loop->iteration }}</td>
-                    <td>{{ $k->nis }}</td>
-                    <td class="fw-semibold">{{ $k->nama }}</td>
-                    <td>{{ $k->kelas }}</td>
-                    <td>{{ $k->jurusan }}</td>
-                    <td>{{ $k->waktu_kedatangan }}</td>
-                    <td>{{ $k->waktu_keluar ?? '-' }}</td>
-                    <td>{{ $k->keluhan ?? '-' }}</td>
-                    <td>
-                        <span class="badge bg-success-subtle text-success border border-success px-2 py-1">
-                            {{ $k->obat->nama ?? '-' }}
-                        </span>
-                    </td>
-                    <td>
-                        <span class="badge bg-info-subtle text-info border border-info px-2 py-1">
-                            {{ $k->tempat ?? 'UKS' }}
-                        </span>
-                    </td>
-                    <td>
-                        @php
-                            $count = \App\Models\Kunjungan::where('nis', $k->nis)->count();
-                            $status = $count >= 5 
-                                ? ['danger','Perlu dirujuk!'] 
-                                : ($count >= 3 
-                                    ? ['warning','Sering berkunjung'] 
-                                    : ['success','Normal']);
-                        @endphp
-                        <span class="badge bg-{{ $status[0] }}">{{ $status[1] }}</span>
-                    </td>
-                    <td class="text-center">
-                        <a href="{{ route('kunjungan.edit',$k->id) }}" class="btn btn-sm btn-outline-warning me-1">
-                            <i class="bi bi-pencil-square"></i>
-                        </a>
-                        <form action="{{ route('kunjungan.destroy',$k->id) }}" method="POST" class="d-inline">
-                            @csrf @method('DELETE')
-                            <button class="btn btn-sm btn-outline-danger" onclick="return confirm('Hapus data kunjungan?')">
-                                <i class="bi bi-trash3-fill"></i>
-                            </button>
-                        </form>
-                    </td>
-                </tr>
-            @empty
+        <table class="table align-middle table-hover mb-0">
+            <thead class="table-light text-center">
                 <tr>
-                    <td colspan="12" class="text-center text-muted py-3">Tidak ada data kunjungan</td>
+                    <th>No</th>
+                    <th>NIS</th>
+                    <th>Nama</th>
+                    <th>Kelas</th>
+                    <th>Jurusan</th>
+                    <th>Waktu Kedatangan</th>
+                    <th>Waktu Keluar</th>
+                    <th>Keluhan</th>
+                    <th>Obat</th>
+                    <th>Tempat</th>
+                    <th>Status</th>
+                    <th>Aksi</th>
                 </tr>
-            @endforelse
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @forelse($kunjungan as $k)
+                    @php
+                        $siswa = \App\Models\Siswa::where('nis', $k->nis)->first();
+                    @endphp
+                    <tr class="table-row-hover"
+                        @if($siswa && $siswa->riwayat_penyakit)
+                            style="background-color: #ffe5e5;"
+                        @endif
+                    >
+                        <td>{{ $loop->iteration }}</td>
+                        <td>{{ $k->nis }}</td>
+                        <td class="fw-semibold">{{ $k->nama }}</td>
+                        <td>{{ $k->kelas }}</td>
+                        <td>{{ $k->jurusan }}</td>
+                        <td>{{ $k->waktu_kedatangan }}</td>
+                        <td>{{ $k->waktu_keluar ?? '-' }}</td>
+                        <td>{{ $k->keluhan ?? '-' }}</td>
+                        <td>
+                            <span class="badge bg-success-subtle text-success border border-success px-2 py-1">
+                                {{ $k->obat->nama ?? '-' }}
+                            </span>
+                        </td>
+                        <td>
+                            <span class="badge bg-info-subtle text-info border border-info px-2 py-1">
+                                {{ $k->tempat ?? 'UKS' }}
+                            </span>
+                        </td>
+                        <td>
+                            @php
+                                $count = \App\Models\Kunjungan::where('nis', $k->nis)->count();
+                                $status = $count >= 5 
+                                    ? ['danger','Perlu dirujuk!'] 
+                                    : ($count >= 3 
+                                        ? ['warning','Sering berkunjung'] 
+                                        : ['success','Normal']);
+                            @endphp
+                            <span class="badge bg-{{ $status[0] }}">{{ $status[1] }}</span>
+                        </td>
+                        <td class="text-center">
+                            <a href="{{ route('kunjungan.edit',$k->id) }}" class="btn btn-sm btn-outline-warning me-1">
+                                <i class="bi bi-pencil-square"></i>
+                            </a>
+                            <form action="{{ route('kunjungan.destroy',$k->id) }}" method="POST" class="d-inline">
+                                @csrf @method('DELETE')
+                                <button class="btn btn-sm btn-outline-danger" onclick="return confirm('Hapus data kunjungan?')">
+                                    <i class="bi bi-trash3-fill"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="12" class="text-center text-muted py-3">Tidak ada data kunjungan</td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
 </div>
 
-
-<!-- Modal Filter -->
+<!-- ===== Modal Filter ===== -->
 <div class="modal fade" id="filterModal" tabindex="-1" aria-labelledby="filterModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content shadow-lg">
@@ -228,7 +229,7 @@
   </div>
 </div>
 
-<!-- Modal Ekspor CSV -->
+<!-- ===== Modal Ekspor CSV ===== -->
 <div class="modal fade" id="csvModal" tabindex="-1" aria-labelledby="csvModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content shadow-lg">
@@ -249,7 +250,6 @@
             </select>
           </div>
 
-          <!-- Rentang waktu mingguan -->
           <div id="weekOptions" style="display:none;">
             <div class="mb-3">
               <label class="form-label fw-semibold">Tanggal Mulai</label>
@@ -261,7 +261,6 @@
             </div>
           </div>
 
-          <!-- Opsi bulan -->
           <div id="monthOptions" style="display:none;">
             <div class="mb-3">
               <label class="form-label fw-semibold">Bulan</label>
@@ -277,7 +276,6 @@
             </div>
           </div>
 
-          <!-- Opsi tahun -->
           <div id="yearOptions" style="display:none;">
             <div class="mb-3">
               <label class="form-label fw-semibold">Tahun</label>
@@ -299,17 +297,8 @@
   </div>
 </div>
 
+<!-- ===== Script ===== -->
 <script>
-function openFilterModal() {
-    const modal = new bootstrap.Modal(document.getElementById('filterModal'));
-    modal.show();
-}
-
-function openCsvModal() {
-    const modal = new bootstrap.Modal(document.getElementById('csvModal'));
-    modal.show();
-}
-
 function toggleCsvOptions() {
     const val = document.getElementById('filterType').value;
     document.getElementById('weekOptions').style.display = val === 'week' ? 'block' : 'none';
@@ -317,4 +306,7 @@ function toggleCsvOptions() {
     document.getElementById('yearOptions').style.display = val === 'year' ? 'block' : 'none';
 }
 </script>
+
+<!-- ===== Bootstrap JS (WAJIB) ===== -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 @endsection
