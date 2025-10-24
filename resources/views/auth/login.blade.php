@@ -153,6 +153,8 @@
                             <input id="email" class="form-input w-full" type="email" name="email" :value="old('email')" required autocomplete="username" />
                         </div>
                     </div>
+
+                    
                     <div>
                         <label for="password" class="block font-medium text-gray-700 mb-2">Kata Sandi</label>
                         <div class="input-group">

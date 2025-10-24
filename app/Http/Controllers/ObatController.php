@@ -15,11 +15,21 @@ class ObatController extends Controller
     }
 
     // List semua obat
-    public function index()
-    {
-        $obats = \App\Models\Obat::all();
-        return view('obat.index', compact('obats'));
+    public function index(Request $request)
+{
+    $query = \App\Models\Obat::query();
+
+    if ($request->filled('search')) {
+        $keyword = $request->search;
+        $query->where('nama', 'like', "%{$keyword}%")
+              ->orWhere('jenis_obat', 'like', "%{$keyword}%");
     }
+
+    $obats = $query->orderBy('nama')->paginate(10);
+
+    return view('obat.index', compact('obats'));
+}
+
 
     // Form tambah
     public function create()

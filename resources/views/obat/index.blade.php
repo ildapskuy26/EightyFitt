@@ -26,10 +26,22 @@
         </div>
     @endif
 
+    {{-- 🌿 Search Bar (JavaScript-based) --}}
+    <div class="d-flex flex-wrap align-items-center gap-2 mb-4">
+        <input 
+            id="searchInput"
+            type="text" 
+            placeholder="Cari nama atau jenis obat..." 
+            class="form-control flex-grow-1"
+            style="max-width: 400px;"
+        >
+        <button id="resetBtn" class="btn btn-secondary d-none">Kembali</button>
+    </div>
+
     {{-- 💊 Tabel Data Obat --}}
     <div class="card border-0 shadow-sm rounded-4 overflow-hidden card-animate">
         <div class="table-responsive">
-            <table class="table align-middle mb-0 text-center">
+            <table class="table align-middle mb-0 text-center" id="obatTable">
                 <thead class="table-header-custom">
                     <tr>
                         <th>No</th>
@@ -108,9 +120,47 @@
                     @endforelse
                 </tbody>
             </table>
+
+            {{-- Pagination tetap ada --}}
+            <div class="mt-3">
+                {{ $obats->withQueryString()->links('pagination::bootstrap-5') }}
+            </div>
         </div>
     </div>
 </div>
+
+{{-- 🔍 Script JavaScript Filter --}}
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const searchInput = document.getElementById('searchInput');
+    const resetBtn = document.getElementById('resetBtn');
+    const rows = document.querySelectorAll('#obatTable tbody tr');
+
+    searchInput.addEventListener('keyup', function() {
+        const keyword = this.value.toLowerCase();
+        let hasFilter = keyword.trim() !== "";
+
+        rows.forEach(row => {
+            const nama = row.children[1]?.textContent.toLowerCase() || "";
+            const jenis = row.children[2]?.textContent.toLowerCase() || "";
+
+            if (nama.includes(keyword) || jenis.includes(keyword)) {
+                row.style.display = "";
+            } else {
+                row.style.display = "none";
+            }
+        });
+
+        resetBtn.classList.toggle('d-none', !hasFilter);
+    });
+
+    resetBtn.addEventListener('click', function() {
+        searchInput.value = "";
+        rows.forEach(row => row.style.display = "");
+        this.classList.add('d-none');
+    });
+});
+</script>
 
 {{-- 🌸 CSS --}}
 <style>
@@ -119,60 +169,29 @@
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
     }
-
     .table-header-custom {
         background: linear-gradient(90deg, #e8f9e9, #e3f2fd);
         color: #2f4858;
         font-weight: 600;
-        letter-spacing: 0.4px;
         border-bottom: 2px solid #dceefc;
     }
-
     .bg-success-soft { background-color: #d4edda !important; }
     .bg-warning-soft { background-color: #fff3cd !important; }
     .bg-danger-soft  { background-color: #f8d7da !important; }
     .bg-primary-subtle { background-color: #e7f1ff !important; }
-
-    .table-row-hover {
-        transition: all 0.25s ease;
-    }
+    .table-row-hover { transition: all 0.25s ease; }
     .table-row-hover:hover {
         background: #f9fff9;
         transform: scale(1.005);
         box-shadow: 0 3px 10px rgba(0,0,0,0.05);
     }
-
-    .card-animate {
-        animation: fadeSlideIn 0.7s ease-in-out;
-    }
-    @keyframes fadeSlideIn {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-
-    .btn-hover-animate {
-        transition: all 0.25s ease;
-    }
-    .btn-hover-animate:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-    }
-
-    .animate-alert {
-        animation: popIn 0.4s ease;
-    }
-    @keyframes popIn {
-        from { opacity: 0; transform: scale(0.95); }
-        to { opacity: 1; transform: scale(1); }
-    }
-
-    .fade-in-up {
-        opacity: 0;
-        transform: translateY(20px);
-        animation: fadeInUp 0.8s ease forwards;
-    }
-    @keyframes fadeInUp {
-        to { opacity: 1; transform: translateY(0); }
-    }
+    .card-animate { animation: fadeSlideIn 0.7s ease-in-out; }
+    @keyframes fadeSlideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    .btn-hover-animate { transition: all 0.25s ease; }
+    .btn-hover-animate:hover { transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
+    .animate-alert { animation: popIn 0.4s ease; }
+    @keyframes popIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+    .fade-in-up { opacity: 0; transform: translateY(20px); animation: fadeInUp 0.8s ease forwards; }
+    @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
 </style>
 @endsection

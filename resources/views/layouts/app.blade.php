@@ -534,6 +534,7 @@
           <li><a class="nav-link" href="{{ route('berita.index') }}"><i class="fas fa-bullhorn"></i><span>Berita</span></a></li>
           <li><a class="nav-link" href="{{ route('petugas.index') }}"><i class="fas fa-user-shield"></i><span>Kelola User</span></a></li>
           <li><a class="nav-link" href="{{ route('pembukuan.index') }}"><i class="fas fa-book-medical"></i><span>Pembukuan</span></a></li>
+          <li><a class="nav-link" href="{{ route('admin.tanggapan.index') }}"><i class=""></i><span>Tanggapan</span></a></li>
           @elseif($role === 'petugas')
           <li><a class="nav-link {{ request()->is('petugas/dashboard') ? 'active' : '' }}" href="{{ route('petugas.dashboard') }}">
             <i class="fas fa-chart-pie"></i><span>Dashboard</span></a></li>
@@ -541,6 +542,7 @@
           <li><a class="nav-link" href="{{ route('obat.index') }}"><i class="fas fa-capsules"></i><span>Inventaris Obat</span></a></li>
           <li><a class="nav-link" href="{{ route('berita.index') }}"><i class="fas fa-bullhorn"></i><span>Berita</span></a></li>
           <li><a class="nav-link" href="{{ route('pembukuan.index') }}"><i class="fas fa-book-medical"></i><span>Pembukuan</span></a></li>
+          <li><a class="nav-link" href="{{ route('admin.tanggapan.index') }}"><i class="fas fa-book-medical"></i><span>Tanggapan</span></a></li>
           @endif
         </ul>
       </div>

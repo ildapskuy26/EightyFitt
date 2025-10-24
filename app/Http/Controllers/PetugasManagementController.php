@@ -17,6 +17,7 @@ class PetugasManagementController extends Controller
     
     public function index()
     {
+
         $petugas = User::where('role', 'petugas')->latest()->paginate(10, ['*'], 'petugas');
         $siswa = User::where('role', 'siswa')->latest()->paginate(10, ['*'], 'siswa');
         return view('petugas.index', compact('petugas', 'siswa'));

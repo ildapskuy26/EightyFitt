@@ -4,31 +4,86 @@
 <div class="container-fluid px-4 py-5 bg-gradient-light">
 
     {{-- ✨ Hero Header Section --}}
-    <div class="row justify-content-center mb-5">
-        <div class="col-lg-10 text-center">
-            <div class="hero-header animate-fade-in">
-                <h1 class="display-4 fw-bold text-gradient-primary mb-3">Berita Terbaru</h1>
-                <p class="lead text-muted mb-4">
-                    @if(in_array(auth()->user()->role, ['admin','petugas']))
-                        Kelola berita terbaru untuk ditampilkan kepada siswa dan guru.
-                    @else
-                        Temukan informasi dan berita terbaru dari UKS.
-                    @endif
-                </p>
+<div class="row justify-content-center mb-5">
+    <div class="col-lg-10 text-center">
+        <div class="hero-header animate-fade-in">
+            <h1 class="display-4 fw-bold text-gradient-primary mb-3">Berita Terbaru</h1>
+            <p class="lead text-muted mb-4">
+                @if(in_array(auth()->user()->role, ['admin','petugas']))
+                    Kelola berita terbaru untuk ditampilkan kepada siswa dan guru.
+                @else
+                    Temukan informasi dan berita terbaru dari UKS.
+                @endif
+            </p>
 
-                {{-- Tombol tambah berita --}}
-                @auth
-                    @if(in_array(auth()->user()->role, ['admin','petugas']))
-                        <a href="{{ route('berita.create') }}" 
-                           class="btn btn-primary btn-lg shadow-lg rounded-pill px-4 py-2 d-inline-flex align-items-center gap-2 btn-hover-lift">
-                            <i class="bi bi-plus-circle-fill"></i> 
-                            <span>Tambah Berita Baru</span>
+            {{-- 🌟 Tombol Tambah + Filter Berita --}}
+<div class="d-flex flex-column flex-md-row justify-content-center align-items-center gap-3 mt-4 mb-5">
+
+    {{-- ➕ Tombol Tambah Berita --}}
+    @if(in_array(auth()->user()->role, ['admin','petugas']))
+        <a href="{{ route('berita.create') }}"
+           class="btn btn-primary shadow-lg rounded-pill px-4 py-2 d-inline-flex align-items-center gap-2 btn-hover-lift">
+            <i class="bi bi-plus-circle-fill"></i>
+            <span>Tambah Berita Baru</span>
+        </a>
+    @endif
+
+    {{-- 🔍 Tombol Filter Berita --}}
+    <div class="dropdown">
+        <button class="btn btn-outline-secondary rounded-pill px-4 py-2 d-inline-flex align-items-center gap-2 btn-hover-lift dropdown-toggle"
+                type="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false">
+            <i class="bi bi-funnel"></i>
+            <span>Filter Berita</span>
+        </button>
+
+        {{-- 🎯 Dropdown Isi Filter --}}
+        <div class="dropdown-menu p-4 shadow-lg border-0 rounded-4" style="min-width: 300px;">
+            <form method="GET" action="{{ route('berita.index') }}" class="d-flex flex-column gap-3">
+
+                {{-- 📰 Filter Berdasarkan Nama (Judul Berita) --}}
+                <div>
+                    <label for="judul" class="form-label fw-semibold">Judul Berita</label>
+                    <input type="text"
+                           name="judul"
+                           id="judul"
+                           value="{{ request('judul') }}"
+                           class="form-control"
+                           placeholder="Masukkan judul berita...">
+                </div>
+
+                {{-- 📅 Filter Berdasarkan Tanggal --}}
+                <div>
+                    <label for="tanggal" class="form-label fw-semibold">Tanggal Dibuat</label>
+                    <input type="date"
+                           name="tanggal"
+                           id="tanggal"
+                           value="{{ request('tanggal') }}"
+                           class="form-control">
+                </div>
+
+                {{-- 🔘 Tombol Aksi --}}
+                <div class="d-flex justify-content-between align-items-center mt-2">
+                    <button type="submit" class="btn btn-success rounded-pill px-3 py-1">
+                        <i class="bi bi-search"></i> Cari
+                    </button>
+
+                    @if(request()->hasAny(['judul','tanggal']))
+                        <a href="{{ route('berita.index') }}"
+                           class="btn btn-outline-secondary rounded-pill px-3 py-1">
+                            <i class="bi bi-x-circle"></i> Reset
                         </a>
                     @endif
-                @endauth
-            </div>
+                </div>
+
+            </form>
         </div>
     </div>
+
+</div>
+
+
 
     {{-- 📰 Daftar Berita --}}
     <div class="row justify-content-center">
@@ -201,6 +256,29 @@
         background: rgba(255,255,255,0.85);
         border-radius: 20px;
         backdrop-filter: blur(8px);
+    }
+
+    /* 🌈 Tombol Tambah + Filter di Tengah dan Beri Jarak Bawah */
+    .hero-header .action-buttons {
+        margin-top: 1.5rem;
+        margin-bottom: 3rem; /* jarak lebih besar dari konten di bawah */
+    }
+
+    .hero-header .btn {
+        transition: all 0.3s ease;
+    }
+
+    .hero-header .btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+    }
+
+    /* Responsif: Tengah di mobile, sejajar di desktop */
+    @media (min-width: 768px) {
+        .hero-header .d-flex {
+            justify-content: center;
+            align-items: center;
+        }
     }
 </style>
 @endsection

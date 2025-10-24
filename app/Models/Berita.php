@@ -22,4 +22,10 @@ class Berita extends Model
         return $this->hasMany(Comment::class);
     }
 
+    public function user()
+{
+    return $this->belongsTo(User::class, 'user_id');
+}
+
+
 }
