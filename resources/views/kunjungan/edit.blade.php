@@ -48,6 +48,15 @@
                     </div>
                 </div>
 
+                {{-- Tempat --}}
+                <div class="mb-3">
+                    <label for="tempat" class="form-label">Tempat Kejadian</label>
+                        <select name="tempat" id="tempat" class="form-select">
+                            <option value="UKS" {{ $kunjungan->tempat == 'UKS' ? 'selected' : '' }}>UKS</option>
+                            <option value="Upacara" {{ $kunjungan->tempat == 'Upacara' ? 'selected' : '' }}>Upacara</option>
+                    </select>
+                </div>
+
                 {{-- Keluhan --}}
                 <div class="mb-3">
                     <label class="form-label fw-semibold">

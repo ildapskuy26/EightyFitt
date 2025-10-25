@@ -14,7 +14,7 @@ class Kunjungan extends Model
     protected $fillable = [
         'nis', 'nama', 'kelas', 'jurusan',
         'waktu_kedatangan', 'waktu_keluar',
-        'keluhan', 'obat_id', 'tempat'
+        'keluhan', 'diagnosis', 'obat_id', 'tempat'
     ];
 
     public function obat()

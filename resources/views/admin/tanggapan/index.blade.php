@@ -16,8 +16,8 @@
                     </p>
                 </div>
                 <div class="d-flex align-items-center gap-2 animate-slide-in-right">
-                    <span class="badge bg-primary fs-6 pulse">
-                        <i class="bi bi-envelope me-1"></i>
+                    <span class="badge bg-primary fs-6 pulse" style="color: white;">
+                        <i class="bi bi-envelope me-1" ></i>
                         {{ $tanggapans->total() }} Total
                     </span>
                 </div>

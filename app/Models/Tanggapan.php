@@ -14,6 +14,7 @@ class Tanggapan extends Model
     protected $fillable = [
         'nama',
         'email',
+        'subjek',
         'pesan',
         'status',
     ];

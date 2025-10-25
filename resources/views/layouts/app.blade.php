@@ -567,7 +567,7 @@
 
   {{-- === SIDEBAR UNTUK ADMIN & PETUGAS === --}}
 @if(in_array($role, ['admin','petugas']))
-<div class="sidebar d-flex flex-column" id="adminSidebar">
+<div class="sidebar d-flex flex-column" style="background-color: #1c4f33" id="adminSidebar">
   <div class="sidebar-header" id="sidebarLogo">
     <img src="{{ asset('images/logouks.png') }}" alt="Logo">
     <h5>UKS SMKN 8 Jakarta</h5>
