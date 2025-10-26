@@ -44,6 +44,32 @@
     overflow-x: hidden;
   }
 
+/* === GAYA FONT NAVBAR ADMIN SESUAI GAMBAR === */
+.sidebar-header h5 {
+  font-family: 'Playfair Display', serif !important;
+  font-weight: 700 !important;
+  color: #6B5A42 !important;
+  font-size: 1.5rem !important;
+  letter-spacing: 0.5px;
+}
+
+.sidebar-header p {
+  font-family: 'Montserrat', sans-serif !important;
+  font-weight: 500 !important;
+  color: #8B7355 !important;
+  font-size: 0.9rem !important;
+}
+
+.sidebar .nav-link,
+.btn-logout-sidebar,
+.admin-header .page-title,
+.admin-header .user-info,
+.admin-header .btn-logout {
+  font-family: 'Montserrat', sans-serif !important;
+  font-weight: 600 !important;
+  color: #3b2f23 !important;
+}
+
 
   /* === SIDEBAR DENGAN ANIMASI === */
   .sidebar {
@@ -233,6 +259,8 @@
     padding: 0;
     margin: 0;
   }
+
+  
 
   /* Menu Items Container dengan Scroll */
   .sidebar-menu {
@@ -458,6 +486,26 @@
     background: var(--accent-dark);
     transform: translateY(-2px);
   }
+
+  /* === PERBAIKI FONT NAVBAR SISWA === */
+.navbar-rounded .nav-link,
+.navbar-rounded .navbar-brand span,
+.navbar-rounded .user-info span {
+  font-family: 'Montserrat', sans-serif !important;
+  font-weight: 700 !important;
+  color: #1c1c1c !important;
+}
+
+.navbar-rounded .nav-link i {
+  color: var(--green-main) !important;
+}
+
+.navbar-rounded .nav-link:hover,
+.navbar-rounded .nav-link.active {
+  color: var(--green-main) !important;
+  font-weight: 700 !important;
+}
+
 
   /* === RESPONSIVE STYLES === */
   @media (max-width: 992px) {

@@ -971,7 +971,7 @@
         
         <div class="gallery-container">
             <div class="gallery-main">
-                <img src="https://images.unsplash.com/photo-1586773860418-d37222d8fce3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" 
+                <img src="/images/ruanguks.jpg" 
                      alt="Ruang UKS" class="gallery-image" id="mainImage">
                 <div class="gallery-caption">
                     <h4 id="mainTitle">Ruang UKS Modern</h4>
@@ -980,25 +980,26 @@
             </div>
             <div class="gallery-thumbnails">
                 <div class="gallery-thumb active" onclick="changeImage(0)">
-                    <img src="https://images.unsplash.com/photo-1586773860418-d37222d8fce3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80" 
+                    <img src="/images/ruanguks.jpg" 
                          alt="Ruang UKS">
                 </div>
                 <div class="gallery-thumb" onclick="changeImage(1)">
-                    <img src="https://images.unsplash.com/photo-1584467735871-8db9ac8e5e3a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80" 
+                    <img src="/images/obatuks.jpg" 
                          alt="Obat-obatan">
                 </div>
                 <div class="gallery-thumb" onclick="changeImage(2)">
-                    <img src="https://images.unsplash.com/photo-1559757148-5c350d0d3c56?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80" 
+                    <img src="/images/alatkesehatan.jpg" 
                          alt="Alat Medis">
                 </div>
                 <div class="gallery-thumb" onclick="changeImage(3)">
-                    <img src="https://images.unsplash.com/photo-1579684385127-1ef15d508118?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80" 
-                         alt="P3K">
+                    <img src="/images/tempattidur.jpg" 
+                         alt="Kamar Tidur Nyaman">
                 </div>
             </div>
         </div>
     </div>
 </section>
+
 
 <!-- Contact Section -->
 <section class="section" id="contact">
@@ -1077,11 +1078,9 @@
                     <i class="bi bi-telephone info-icon"></i>
                     <h3 class="info-title">Kontak Darurat</h3>
                     <div class="info-content">
-                        <p><strong>UKS:</strong> (021) 7996493</p>
-                        <p><strong>Dokter:</strong> (021) 8765-4321</p>
-                        <p><strong>Ambulans:</strong> 119</p>
-                        <button class="btn btn-outline-custom btn-sm mt-2" onclick="showEmergencyContacts()">
-                            <i class="bi bi-telephone me-1"></i>Kontak Lainnya
+                        <p><strong>Kordinator UKS:</strong> +6281584108084</p>
+                        <button class="btn btn-outline-custom btn-sm mt-2" onclick="openWhatsApp()">
+                            <i class="bi bi-whatsapp me-1"></i>Hubungi via WhatsApp
                         </button>
                     </div>
                 </div>
@@ -1092,11 +1091,11 @@
                     <h3 class="info-title">Tenaga Medis</h3>
                     <div class="info-content">
                         <p><strong>Dokter:</strong> dr. Sari Wulandari</p>
-                        <p><strong>Perawat:</strong> Ns. Ahmad Surya</p>
-                        <p><strong>Staf Admin:</strong> Dewi Ratna</p>
-                        <button class="btn btn-outline-custom btn-sm mt-2" onclick="showMedicalStaff()">
-                            <i class="bi bi-people me-1"></i>Lihat Profil
-                        </button>
+                        <p><strong>Ketua Pokja:</strong> Bu Mila</p>
+                        <p><strong>Kordinator UKS:</strong> Bu lala</p>
+                        <button class="btn btn-outline-custom btn-sm mt-2" onclick="showMedicalStaffModal()">
+    <i class="bi bi-people me-1"></i>Lihat Profil
+</button>
                     </div>
                 </div>
             </div>
@@ -1392,27 +1391,28 @@
         }
     });
     
+
     // Gallery functionality
     const galleryData = [
         {
-            image: "https://images.unsplash.com/photo-1586773860418-d37222d8fce3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
+            image: "/images/ruanguks.jpg",
             title: "Ruang UKS Modern",
             description: "Fasilitas lengkap untuk pelayanan kesehatan yang optimal"
         },
         {
-            image: "https://images.unsplash.com/photo-1584467735871-8db9ac8e5e3a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
+            image: "/images/obatuks.jpg",
             title: "Penyediaan Obat",
             description: "Obat-obatan dasar yang selalu tersedia dan terjamin kualitasnya"
         },
         {
-            image: "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
+            image: "/images/alatkesehatan.jpg",
             title: "Alat Kesehatan",
             description: "Peralatan medis lengkap untuk pemeriksaan dan penanganan"
         },
         {
-            image: "https://images.unsplash.com/photo-1579684385127-1ef15d508118?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
-            title: "Peralatan P3K",
-            description: "Standar lengkap untuk pertolongan pertama pada kecelakaan"
+            image: "/images/tempattidur.jpg",
+            title: "Kamar Tidur Nyaman",
+            description: "Fasilitas istirahat yang nyaman untuk pemulihan siswa"
         }
     ];
     
@@ -1445,6 +1445,92 @@
         }, 300);
     }
     
+    // Fungsi untuk membuka WhatsApp
+function openWhatsApp() {
+    const phoneNumber = '6281584108084';
+    const message = 'Halo, saya ingin berkonsultasi mengenai layanan UKS.';
+    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+    window.open(whatsappUrl, '_blank');
+}
+
+// Fungsi untuk menampilkan modal tenaga medis (Card Layout)
+function showMedicalStaffModal() {
+    const modal = document.createElement('div');
+    modal.className = 'modal-overlay active';
+    modal.innerHTML = `
+        <div class="modal-content" style="max-width: 900px; max-height: 85vh; overflow-y: auto;">
+            <button class="modal-close" onclick="this.parentElement.parentElement.remove()">
+                <i class="bi bi-x"></i>
+            </button>
+            <h3 class="mb-4 text-center" style="color: var(--dark); font-size: 2rem;">Profil Tenaga Medis UKS</h3>
+            
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100 text-center" style="border: none; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+                        <div class="card-header" style="background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; border: none; padding: 1.5rem;">
+                            <h5 class="mb-0">👩‍⚕️ Dokter</h5>
+                        </div>
+                        <div class="card-body">
+                            <h6 class="card-title" style="color: var(--dark);">dr. Sari Wulandari</h6>
+                            <div class="staff-info">
+                                <p class="small mb-1"><strong>Spesialis:</strong> Umum & Anak</p>
+                                <p class="small mb-1"><strong>Jadwal:</strong> Senin - Kamis</p>
+                                <p class="small mb-0"><strong>Waktu:</strong> 08:00 - 12:00</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100 text-center" style="border: none; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+                        <div class="card-header" style="background: linear-gradient(135deg, #FF6B6B, #FF8E53); color: white; border: none; padding: 1.5rem;">
+                            <h5 class="mb-0">👩‍💼 Ketua Pokja</h5>
+                        </div>
+                        <div class="card-body">
+                            <h6 class="card-title" style="color: var(--dark);">Bu Mila</h6>
+                            <div class="staff-info">
+                                <p class="small mb-1"><strong>Bidang:</strong> Koordinasi Program</p>
+                                <p class="small mb-1"><strong>Jadwal:</strong> Setiap Hari Kerja</p>
+                                <p class="small mb-0"><strong>Tugas:</strong> Pengawasan Program</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100 text-center" style="border: none; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+                        <div class="card-header" style="background: linear-gradient(135deg, var(--accent), #4ECDC4); color: white; border: none; padding: 1.5rem;">
+                            <h5 class="mb-0">👩‍⚕️ Kordinator UKS</h5>
+                        </div>
+                        <div class="card-body">
+                            <h6 class="card-title" style="color: var(--dark);">Bu Lala</h6>
+                            <div class="staff-info">
+                                <p class="small mb-1"><strong>Bidang:</strong> Operasional Harian</p>
+                                <p class="small mb-1"><strong>Jadwal:</strong> Senin - Jumat</p>
+                                <p class="small mb-0"><strong>Waktu:</strong> 07:00 - 15:00</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center mt-4">
+                <button class="btn btn-primary-custom" onclick="this.closest('.modal-overlay').remove()">
+                    <i class="bi bi-check-circle me-2"></i>Tutup
+                </button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(modal);
+
+    // Close modal ketika klik di luar konten
+    modal.addEventListener('click', function(e) {
+        if (e.target === this) {
+            this.remove();
+        }
+    });
+}
+
     // Utility functions
     function scrollToTop() {
         window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -1458,12 +1544,6 @@
         document.getElementById('hours').scrollIntoView({ behavior: 'smooth' });
     }
     
-    function showEmergencyContacts() {
-        alert('Kontak Darurat UKS:\n\n• Kepala UKS: (021) 2345-6789\n• Perawat UKS: (021) 3456-7890\n• Administrasi: (021) 4567-8901\n• Ambulans: 119');
-    }
     
-    function showMedicalStaff() {
-        alert('Tenaga Medis UKS:\n\n• Dokter: dr. Sari Wulandari\n• Perawat: Ns. Ahmad Surya\n• Staf Administrasi: Dewi Ratna\n• Asisten Medis: Budi Santoso');
-    }
 </script>
 @endsection

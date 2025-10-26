@@ -22,7 +22,7 @@ class KunjunganController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Kunjungan::query();
+        $query = Kunjungan::with(['petugas', 'obat']);
 
         // 🔍 Filter pencarian
         if ($request->filled('search')) {
@@ -94,7 +94,7 @@ class KunjunganController extends Controller
             'obat_id'          => $validated['obat_id'] ?? null,
             'diagnosis'        => $validated['diagnosis'],
             'tempat'           => $validated['tempat'],
-             'petugas_id'       => Auth::id(), // <-- ini penting
+             'id_petugas' => auth()->id(), // otomatis isi ID user yang logi
         ]);
 
         // Hitung kunjungan minggu ini
@@ -164,7 +164,7 @@ class KunjunganController extends Controller
             'obat_id'          => $validated['obat_id'] ?? null,
             'diagnosis'        => $validated['diagnosis'],
             'tempat'           => $validated['tempat'],
-             'petugas_id'       => Auth::id(), // <-- ini penting
+             'id_petugas'       => Auth::id(), // <-- ini penting
         ]);
 
         return redirect()->route('kunjungan.index')
