@@ -23,8 +23,17 @@
 
         .overlay-container { position: absolute; top: 0; left: 50%; width: 50%; height: 100%; overflow: hidden; transition: transform 0.7s ease-in-out; z-index: 100; }
         .slider-container.active .overlay-container { transform: translateX(-100%); }
-        .overlay { position: relative; left: -100%; height: 100%; width: 200%; background: linear-gradient(135deg, #10b981 0%, #059669 25%, #047857 50%, #065f46 100%); transform: translateX(0); transition: transform 0.7s ease-in-out; }
+        .overlay { position: relative; left: -100%; height: 100%; width: 200%; transform: translateX(0); transition: transform 0.7s ease-in-out; }
         .slider-container.active .overlay { transform: translateX(50%); }
+
+        /* Overlay dengan warna yang ditukar */
+        .overlay-left-bg {
+            background: linear-gradient(135deg, #065f46 0%, #047857 25%, #059669 50%, #10b981 100%);
+        }
+        
+        .overlay-right-bg {
+            background: linear-gradient(135deg, #059669 0%, #10b981 25%, #34d399 50%, #6ee7b7 100%);
+        }
 
         .overlay-panel { position: absolute; display: flex; align-items: center; justify-content: center; flex-direction: column; padding: 0 60px; text-align: center; top: 0; height: 100%; width: 50%; transform: translateX(0); transition: transform 0.7s ease-in-out; color: white; }
         .overlay-left { transform: translateX(-20%); }
@@ -59,12 +68,94 @@
         .form-header { margin-top: -10px; margin-bottom: 10px; }
         .form-content { overflow-y: auto; max-height: 85%; padding: 5px; }
 
-        .overlay-icon { width: 110px; height: 110px; border-radius: 50%; background: rgba(255,255,255,0.25); display: flex; align-items: center; justify-content: center; margin-bottom: 30px; backdrop-filter: blur(15px); border: 3px solid rgba(255,255,255,0.4); box-shadow: 0 12px 40px rgba(0,0,0,0.15); animation: float 6s ease-in-out infinite; }
-        .overlay-icon i { font-size: 45px; color: white; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2)); }
-        .overlay-panel h3 { font-size: 32px; font-weight: 800; margin-bottom: 20px; text-shadow: 0 4px 12px rgba(0,0,0,0.15); letter-spacing: 0.5px; }
-        .overlay-panel p { font-size: 17px; margin-bottom: 30px; font-weight: 500; opacity: 0.95; line-height: 1.6; }
+        /* PERBAIKAN: Gaya untuk logo agar tidak ter-crop */
+        .logo-wrapper {
+            width: 100px;
+            height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 5px;
+        }
+        
+        .logo-image {
+            max-width: 100%;
+            max-height: 100%;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+        }
 
-        @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        /* Gaya baru untuk ikon overlay - lebih sederhana */
+        .overlay-icon { 
+            width: 100px; 
+            height: 100px; 
+            border-radius: 20px; 
+            background: rgba(255,255,255,0.2); 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            margin-bottom: 25px; 
+            border: 2px solid rgba(255,255,255,0.3); 
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1); 
+            animation: rotate 8s linear infinite; 
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .overlay-icon i { 
+            font-size: 40px; 
+            color: white; 
+            z-index: 2;
+            position: relative;
+        }
+        
+        .overlay-panel h3 { 
+            font-size: 28px; 
+            font-weight: 800; 
+            margin-bottom: 20px; 
+            text-shadow: 0 2px 8px rgba(0,0,0,0.15); 
+            letter-spacing: 0.5px; 
+        }
+        .overlay-panel p { 
+            font-size: 16px; 
+            margin-bottom: 30px; 
+            font-weight: 500; 
+            opacity: 0.95; 
+            line-height: 1.6; 
+        }
+
+        @keyframes rotate { 
+            0% { transform: rotate(0); } 
+            100% { transform: rotate(360deg); } 
+        }
+        
+        /* Animasi tambahan untuk ikon */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .overlay-icon:hover {
+            animation: rotate 8s linear infinite, pulse 2s ease-in-out infinite;
+            background: rgba(255,255,255,0.3);
+        }
+
+        /* Logo placeholder jika gambar tidak tersedia */
+        .logo-placeholder {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #10b981, #059669);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+            text-align: center;
+        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col justify-center items-center bg-gradient-to-br from-green-50 via-white to-blue-50 p-6">
@@ -73,11 +164,16 @@
         <div class="form-container login-container">
             <div class="form-header">
                 <div class="logo-container">
-                    <div class="w-20 h-20 rounded-full bg-white flex items-center justify-center shadow-lg">
-                        <img src="{{ asset('images/smk.png') }}" alt="Logo UKS" class="w-full h-full object-cover">
+                    <!-- PERBAIKAN: Logo SMK 8 Jakarta dengan wrapper khusus -->
+                    <div class="logo-wrapper">
+                        <img src="images/smk.png" alt="Logo SMKN 8 Jakarta" class="logo-image" 
+                             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        <div class="logo-placeholder" style="display: none;">
+                            SMKN 8<br>JKT
+                        </div>
                     </div>
                 </div>
-                <h1 class="text-xl font-bold text-gray-800 mt-9">Selamat Datang</h1>
+                <h1 class="text-2xl font-bold text-gray-800 mt-4">Selamat Datang</h1>
                 <p class="text-gray-500 text-sm mt-1">Masuk untuk melanjutkan ke sistem UKS</p>
             </div>
             <div class="form-content">
@@ -93,14 +189,14 @@
                         <label for="email" class="block font-medium text-gray-700 mb-2">Email</label>
                         <div class="input-group">
                             <i class="bi bi-envelope input-icon"></i>
-                            <input id="email" type="email" name="email" class="form-input" :value="old('email')" required autofocus autocomplete="username" />
+                            <input id="email" type="email" name="email" class="form-input" :value="old('email')" required autofocus autocomplete="username" placeholder="Masukkan email Anda" />
                         </div>
                     </div>
                     <div>
                         <label for="password" class="block font-medium text-gray-700 mb-2">Password</label>
                         <div class="input-group">
                             <i class="bi bi-lock input-icon"></i>
-                            <input id="password" type="password" name="password" class="form-input" required autocomplete="current-password" />
+                            <input id="password" type="password" name="password" class="form-input" required autocomplete="current-password" placeholder="Masukkan password Anda" />
                         </div>
                     </div>
                     <div class="flex items-center justify-between">
@@ -129,8 +225,13 @@
         <div class="form-container register-container">
             <div class="form-header">
                 <div class="logo-container">
-                    <div class="w-20 h-20 rounded-full bg-white flex items-center justify-center shadow-lg">
-                        <img src="{{ asset('images/smk.png') }}" alt="Logo UKS" class="w-full h-full object-cover">
+                    <!-- PERBAIKAN: Logo SMK 8 Jakarta dengan wrapper khusus -->
+                    <div class="logo-wrapper">
+                        <img src="images/smk.png" alt="Logo SMKN 8 Jakarta" class="logo-image" 
+                             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        <div class="logo-placeholder" style="display: none;">
+                            SMKN 8<br>JKT
+                        </div>
                     </div>
                 </div>
                 <h1 class="text-2xl font-bold text-gray-800 mt-4">Daftar Akun UKS</h1>
@@ -143,28 +244,30 @@
                         <label for="name" class="block font-medium text-gray-700 mb-2">Nama Lengkap</label>
                         <div class="input-group">
                             <i class="bi bi-person input-icon"></i>
-                            <input id="name" class="form-input w-full" type="text" name="name" :value="old('name')" required autofocus autocomplete="name" />
+                            <input id="name" class="form-input w-full" type="text" name="name" :value="old('name')" required autofocus autocomplete="name" placeholder="Masukkan nama lengkap Anda" />
                         </div>
                     </div>
                     <div>
                         <label for="email" class="block font-medium text-gray-700 mb-2">Email</label>
                         <div class="input-group">
                             <i class="bi bi-envelope input-icon"></i>
-                            <input id="email" class="form-input w-full" type="email" name="email" :value="old('email')" required autocomplete="username" />
+                            <input id="email" class="form-input w-full" type="email" name="email" :value="old('email')" required autocomplete="username" placeholder="Masukkan email Anda" />
                         </div>
                     </div>
+
+                    
                     <div>
                         <label for="password" class="block font-medium text-gray-700 mb-2">Kata Sandi</label>
                         <div class="input-group">
                             <i class="bi bi-lock input-icon"></i>
-                            <input id="password" class="form-input w-full" type="password" name="password" required autocomplete="new-password" />
+                            <input id="password" class="form-input w-full" type="password" name="password" required autocomplete="new-password" placeholder="Buat kata sandi yang kuat" />
                         </div>
                     </div>
                     <div>
                         <label for="password_confirmation" class="block font-medium text-gray-700 mb-2">Konfirmasi Kata Sandi</label>
                         <div class="input-group">
                             <i class="bi bi-lock-fill input-icon"></i>
-                            <input id="password_confirmation" class="form-input w-full" type="password" name="password_confirmation" required autocomplete="new-password" />
+                            <input id="password_confirmation" class="form-input w-full" type="password" name="password_confirmation" required autocomplete="new-password" placeholder="Konfirmasi kata sandi Anda" />
                         </div>
                     </div>
                     <div class="pt-2">
@@ -185,20 +288,30 @@
         <!-- OVERLAY -->
         <div class="overlay-container">
             <div class="overlay">
+                <!-- Overlay Kiri (Login) - Warna hijau gelap -->
+                <div class="overlay-left-bg" style="position: absolute; left: 0; width: 50%; height: 100%;"></div>
+                
+                <!-- Overlay Kanan (Register) - Warna hijau terang -->
+                <div class="overlay-right-bg" style="position: absolute; left: 50%; width: 50%; height: 100%;"></div>
+                
                 <div class="overlay-panel overlay-left">
                     <div class="overlay-icon">
-                        <i class="fas fa-stethoscope"></i>
+                        <i class="fas fa-user-md"></i>
                     </div>
-                    <h3>Selamat Datang Kembali!</h3>
-                    <p>Masuk untuk mengakses layanan kesehatan UKS dan kelola data medis Anda</p>
+                    <h3 style="text-align: center; font-weight: 700; font-size: 28px; color: #ffffff; margin-bottom: 15px;">
+                    Selamat Datang Kembali, <br> Warga Sehat SMKN 8!
+                    </h3>
+                    <p style="max-width: 600px; margin: 0 auto 25px auto; color: #e8f5e9; font-size: 16px; line-height: 1.6; text-align: center;">
+                    Masuk untuk mengakses layanan kesehatan sekolah dan kelola data UKS Anda dengan mudah.
+                    </p>
                     <button id="loginOverlay" class="btn-outline">Masuk Sekarang</button>
                 </div>
                 <div class="overlay-panel overlay-right">
                     <div class="overlay-icon">
-                        <i class="fas fa-hospital-user"></i>
+                        <i class="fas fa-stethoscope"></i>
                     </div>
-                    <h3>Halo, Sobat UKS!</h3>
-                    <p>Bergabunglah dengan komunitas kesehatan sekolah kami dan daftarkan akun Anda</p>
+                    <h3>Halo, Warga Sehat SMKN 8!</h3>
+                    <p>Bergabunglah bersama UKS SMKN 8 Jakarta untuk menciptakan sekolah yang sehat, peduli, dan berdaya bersama!</p>
                     <button id="registerOverlay" class="btn-outline">Daftar Sekarang</button>
                 </div>
             </div>

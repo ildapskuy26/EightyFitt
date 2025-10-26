@@ -243,7 +243,7 @@
                                 <i class="fas fa-user-md fa-2x"></i>
                             </div>
                             <h3 class="fw-bold text-dark mb-2">
-                                {{ $riwayat->unique('petugas_id')->count() }}
+                                {{ $riwayat->unique('id_petugas')->count() }}
                             </h3>
                             <p class="text-muted mb-0">Petugas Berbeda</p>
                         </div>
@@ -258,110 +258,181 @@
 @endif
 @endauth
 
+<style>
+html {
+  scroll-behavior: smooth;
+}
+</style>
+
+<!-- SECTION SELAMAT DATANG YANG DIPERBAIKI -->
+<section id="welcome-section" class="section-fade py-5">
+  <div class="container">
+    <div class="text-center mb-5">
+      <div class="icon-wrapper bg-primary mx-auto mb-3">
+        <i class="fas fa-heart"></i>
+      </div>
+      <h2 class="fw-bold text-dark mb-3">Selamat Datang di UKS SMKN 8 Jakarta</h2>
+      <p class="text-muted fs-5" style="max-width: 700px; margin: auto;">
+        Kami hadir untuk memberikan layanan kesehatan dasar, edukasi hidup sehat, dan pertolongan pertama bagi seluruh siswa.
+      </p>
+    </div>
+
+    <div class="row g-4 justify-content-center">
+      <!-- KARTU BERITA -->
+      <div class="col-md-6 col-lg-4">
+        <div class="card border-0 shadow-sm rounded-4 text-center p-4 hover-card animate-on-scroll">
+          <div class="card-icon-wrapper mb-3">
+            <i class="fas fa-newspaper"></i>
+          </div>
+          <h5 class="fw-semibold text-dark mb-3">Berita Kesehatan</h5>
+          <p class="text-muted small mb-4">
+            Dapatkan informasi terbaru dan tips hidup sehat dari UKS sekolah kita.
+          </p>
+          <a href="{{ route('berita.index') }}" class="btn btn-hero px-4 py-2 fw-semibold shadow-sm">
+            <i class="fas fa-newspaper me-2"></i>Baca Berita
+          </a>
+        </div>
+      </div>
+
+      <!-- KARTU LAYANAN -->
+      <div class="col-md-6 col-lg-4">
+        <div class="card border-0 shadow-sm rounded-4 text-center p-4 hover-card animate-on-scroll">
+          <div class="card-icon-wrapper mb-3">
+            <i class="fas fa-first-aid"></i>
+          </div>
+          <h5 class="fw-semibold text-dark mb-3">Layanan UKS</h5>
+          <p class="text-muted small mb-4">
+            Akses layanan kesehatan dasar dan pertolongan pertama di UKS sekolah.
+          </p>
+          <a href="#about-uks" class="btn btn-hero-outline px-4 py-2 fw-semibold shadow-sm">
+            <i class="fas fa-arrow-right me-2"></i>Lihat Layanan
+          </a>
+        </div>
+      </div>
+
+      <!-- KARTU EDUKASI -->
+      <div class="col-md-6 col-lg-4">
+        <div class="card border-0 shadow-sm rounded-4 text-center p-4 hover-card animate-on-scroll">
+          <div class="card-icon-wrapper mb-3">
+            <i class="fas fa-book-medical"></i>
+          </div>
+          <h5 class="fw-semibold text-dark mb-3">Edukasi Kesehatan</h5>
+          <p class="text-muted small mb-4">
+            Pelajari tips dan informasi kesehatan untuk hidup lebih sehat setiap hari.
+          </p>
+          <a href="#fun-education" class="btn btn-hero px-4 py-2 fw-semibold shadow-sm">
+            <i class="fas fa-graduation-cap me-2"></i>Pelajari
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- SECTION TENTANG UKS -->
 <section id="about-uks" class="section-fade">
-    <div class="container py-5">
-        <div class="row align-items-center">
-            <div class="col-lg-6 mb-4 mb-lg-0">
-                <div class="d-flex align-items-center mb-4">
-                    <div class="icon-wrapper bg-primary me-3">
-                        <i class="fas fa-heartbeat"></i>
-                    </div>
-                    <h2 class="fw-bold text-dark mb-0">Kenapa Ada UKS di Sekolah?</h2>
-                </div>
-                <p class="text-muted fs-6 mb-4">
-                    Unit Kesehatan Sekolah (UKS) hadir untuk memberikan edukasi kesehatan yang mudah, 
-                    seru, dan bisa dipraktikkan langsung dalam kehidupan sehari-hari di lingkungan sekolah.
-                </p>
-                
-                <div class="d-flex align-items-start mb-3 animate-on-scroll">
-                    <div class="flex-shrink-0">
-                        <div class="icon-small bg-success">
-                            <i class="fas fa-first-aid"></i>
-                        </div>
-                    </div>
-                    <div class="flex-grow-1 ms-3">
-                        <h5 class="fw-semibold text-dark">Layanan Kesehatan Dasar</h5>
-                        <p class="text-muted small mb-0">Pertolongan pertama dan pemeriksaan kesehatan rutin untuk siswa.</p>
-                    </div>
-                </div>
-                
-                <div class="d-flex align-items-start mb-3 animate-on-scroll">
-                    <div class="flex-shrink-0">
-                        <div class="icon-small bg-info">
-                            <i class="fas fa-book-medical"></i>
-                        </div>
-                    </div>
-                    <div class="flex-grow-1 ms-3">
-                        <h5 class="fw-semibold text-dark">Edukasi Kesehatan</h5>
-                        <p class="text-muted small mb-0">Materi hidup sehat yang disampaikan dengan cara menyenangkan dan mudah dipahami.</p>
-                    </div>
-                </div>
-
-                <div class="d-flex align-items-start mb-3 animate-on-scroll">
-                    <div class="flex-shrink-0">
-                        <div class="icon-small bg-warning">
-                            <i class="fas fa-user-md"></i>
-                        </div>
-                    </div>
-                    <div class="flex-grow-1 ms-3">
-                        <h5 class="fw-semibold text-dark">Konsultasi Kesehatan</h5>
-                        <p class="text-muted small mb-0">Konsultasi masalah kesehatan dengan petugas UKS yang berpengalaman.</p>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="col-lg-6">
-                <div class="card border-0 shadow-sm rounded-4 overflow-hidden animate-on-scroll">
-                    <div class="card-body p-4">
-                        <h4 class="fw-bold text-center mb-4">
-                            <i class="fas fa-clipboard-list me-2 text-primary"></i>
-                            Fasilitas UKS Kami
-                        </h4>
-                        
-                        <div class="row text-center">
-                            <div class="col-6 mb-4">
-                                <div class="p-3 facility-item">
-                                    <div class="facility-icon text-primary mb-2">
-                                        <i class="fas fa-band-aid"></i>
-                                    </div>
-                                    <h6 class="fw-semibold">P3K Lengkap</h6>
-                                    <p class="text-muted small">Peralatan pertolongan pertama yang lengkap</p>
-                                </div>
-                            </div>
-                            <div class="col-6 mb-4">
-                                <div class="p-3 facility-item">
-                                    <div class="facility-icon text-success mb-2">
-                                        <i class="fas fa-pills"></i>
-                                    </div>
-                                    <h6 class="fw-semibold">Obat-obatan</h6>
-                                    <p class="text-muted small">Obat dasar untuk penanganan darurat</p>
-                                </div>
-                            </div>
-                            <div class="col-6 mb-4">
-                                <div class="p-3 facility-item">
-                                    <div class="facility-icon text-info mb-2">
-                                        <i class="fas fa-stethoscope"></i>
-                                    </div>
-                                    <h6 class="fw-semibold">Konsultasi</h6>
-                                    <p class="text-muted small">Konsultasi kesehatan dengan petugas</p>
-                                </div>
-                            </div>
-                            <div class="col-6 mb-4">
-                                <div class="p-3 facility-item">
-                                    <div class="facility-icon text-warning mb-2">
-                                        <i class="fas fa-running"></i>
-                                    </div>
-                                    <h6 class="fw-semibold">Aktivitas Sehat</h6>
-                                    <p class="text-muted small">Program olahraga dan aktivitas sehat</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+  <div class="container py-5">
+    <div class="row align-items-center">
+      <div class="col-lg-6 mb-4 mb-lg-0">
+        <div class="d-flex align-items-center mb-4">
+          <div class="icon-wrapper bg-primary me-3">
+            <i class="fas fa-heartbeat"></i>
+          </div>
+          <h2 class="fw-bold text-dark mb-0">Kenapa Ada UKS di Sekolah?</h2>
         </div>
+        <p class="text-muted fs-6 mb-4">
+          Unit Kesehatan Sekolah (UKS) hadir untuk memberikan edukasi kesehatan yang mudah,
+          seru, dan bisa dipraktikkan langsung dalam kehidupan sehari-hari di lingkungan sekolah.
+        </p>
+
+        <div class="d-flex align-items-start mb-3 animate-on-scroll">
+          <div class="flex-shrink-0">
+            <div class="icon-small bg-success">
+              <i class="fas fa-first-aid"></i>
+            </div>
+          </div>
+          <div class="flex-grow-1 ms-3">
+            <h5 class="fw-semibold text-dark">Layanan Kesehatan Dasar</h5>
+            <p class="text-muted small mb-0">Pertolongan pertama dan pemeriksaan kesehatan rutin untuk siswa.</p>
+          </div>
+        </div>
+
+        <div class="d-flex align-items-start mb-3 animate-on-scroll">
+          <div class="flex-shrink-0">
+            <div class="icon-small bg-info">
+              <i class="fas fa-book-medical"></i>
+            </div>
+          </div>
+          <div class="flex-grow-1 ms-3">
+            <h5 class="fw-semibold text-dark">Edukasi Kesehatan</h5>
+            <p class="text-muted small mb-0">Materi hidup sehat yang disampaikan dengan cara menyenangkan dan mudah dipahami.</p>
+          </div>
+        </div>
+
+        <div class="d-flex align-items-start mb-3 animate-on-scroll">
+          <div class="flex-shrink-0">
+            <div class="icon-small bg-warning">
+              <i class="fas fa-user-md"></i>
+            </div>
+          </div>
+          <div class="flex-grow-1 ms-3">
+            <h5 class="fw-semibold text-dark">Konsultasi Kesehatan</h5>
+            <p class="text-muted small mb-0">Konsultasi masalah kesehatan dengan petugas UKS yang berpengalaman.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-6">
+        <div class="card border-0 shadow-sm rounded-4 overflow-hidden animate-on-scroll">
+          <div class="card-body p-4">
+            <h4 class="fw-bold text-center mb-4">
+              <i class="fas fa-clipboard-list me-2 text-primary"></i>
+              Fasilitas UKS Kami
+            </h4>
+
+            <div class="row text-center">
+              <div class="col-6 mb-4">
+                <div class="p-3 facility-item">
+                  <div class="facility-icon text-primary mb-2">
+                    <i class="fas fa-band-aid"></i>
+                  </div>
+                  <h6 class="fw-semibold">P3K Lengkap</h6>
+                  <p class="text-muted small">Peralatan pertolongan pertama yang lengkap</p>
+                </div>
+              </div>
+              <div class="col-6 mb-4">
+                <div class="p-3 facility-item">
+                  <div class="facility-icon text-success mb-2">
+                    <i class="fas fa-pills"></i>
+                  </div>
+                  <h6 class="fw-semibold">Obat-obatan</h6>
+                  <p class="text-muted small">Obat dasar untuk penanganan darurat</p>
+                </div>
+              </div>
+              <div class="col-6 mb-4">
+                <div class="p-3 facility-item">
+                  <div class="facility-icon text-info mb-2">
+                    <i class="fas fa-stethoscope"></i>
+                  </div>
+                  <h6 class="fw-semibold">Konsultasi</h6>
+                  <p class="text-muted small">Konsultasi kesehatan dengan petugas</p>
+                </div>
+              </div>
+              <div class="col-6 mb-4">
+                <div class="p-3 facility-item">
+                  <div class="facility-icon text-warning mb-2">
+                    <i class="fas fa-running"></i>
+                  </div>
+                  <h6 class="fw-semibold">Aktivitas Sehat</h6>
+                  <p class="text-muted small">Program olahraga dan aktivitas sehat</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
 </section>
 
 <!-- SECTION MASALAH KESEHATAN DI SEKOLAH -->
@@ -440,96 +511,96 @@
 
 <!-- SECTION EDUKASI YANG MUDAH & SERU -->
 <section id="fun-education" class="section-fade">
-    <div class="container py-5">
-        <div class="row align-items-center">
-            <div class="col-lg-6 order-2 order-lg-1">
-                <div class="card border-0 shadow-sm rounded-4 p-4 animate-on-scroll">
-                    <h3 class="fw-bold text-center mb-4">
-                        <i class="fas fa-graduation-cap me-2 text-success"></i>
-                        Edukasi yang Mudah & Seru
-                    </h3>
-                    
-                    <div class="d-flex align-items-start mb-4">
-                        <div class="flex-shrink-0">
-                            <div class="icon-small bg-success">
-                                <i class="fas fa-bullseye"></i>
-                            </div>
-                        </div>
-                        <div class="flex-grow-1 ms-3">
-                            <h5 class="fw-semibold text-dark">Materi Praktis</h5>
-                            <p class="text-muted small">Belajar hidup sehat dengan cara yang mudah dipahami dan langsung bisa dipraktikkan.</p>
-                        </div>
-                    </div>
-                    
-                    <div class="d-flex align-items-start mb-4">
-                        <div class="flex-shrink-0">
-                            <div class="icon-small bg-primary">
-                                <i class="fas fa-gamepad"></i>
-                            </div>
-                        </div>
-                        <div class="flex-grow-1 ms-3">
-                            <h5 class="fw-semibold text-dark">Metode Menyenangkan</h5>
-                            <p class="text-muted small">Games, kuis, dan aktivitas interaktif membuat belajar kesehatan jadi seru.</p>
-                        </div>
-                    </div>
-                    
-                    <div class="d-flex align-items-start mb-4">
-                        <div class="flex-shrink-0">
-                            <div class="icon-small bg-warning">
-                                <i class="fas fa-users"></i>
-                            </div>
-                        </div>
-                        <div class="flex-grow-1 ms-3">
-                            <h5 class="fw-semibold text-dark">Belajar Bersama</h5>
-                            <p class="text-muted small">Diskusi kelompok dan sharing session dengan teman-teman sekelas.</p>
-                        </div>
-                    </div>
-                </div>
+  <div class="container py-5">
+    <div class="row align-items-center">
+      <div class="col-lg-6 order-2 order-lg-1">
+        <div class="card border-0 shadow-sm rounded-4 p-4 animate-on-scroll">
+          <h3 class="fw-bold text-center mb-4">
+            <i class="fas fa-graduation-cap me-2 text-success"></i>
+            Edukasi yang Mudah & Seru
+          </h3>
+
+          <div class="d-flex align-items-start mb-4">
+            <div class="flex-shrink-0">
+              <div class="icon-small bg-success">
+                <i class="fas fa-bullseye"></i>
+              </div>
             </div>
-            
-            <div class="col-lg-6 order-1 order-lg-2 mb-4 mb-lg-0">
-                <div class="d-flex align-items-center mb-4">
-                    <div class="icon-wrapper bg-success me-3">
-                        <i class="fas fa-laugh-beam"></i>
-                    </div>
-                    <h2 class="fw-bold text-dark mb-0">Edukasi Kesehatan yang Menyenangkan</h2>
-                </div>
-                <p class="text-muted mb-4">
-                    Kami percaya bahwa edukasi kesehatan harus disampaikan dengan cara yang menyenangkan dan mudah dipahami. 
-                    Melalui berbagai aktivitas interaktif, siswa dapat belajar tentang pentingnya menjaga kesehatan dengan cara yang seru.
-                </p>
-                <div class="row text-center">
-                    <div class="col-4">
-                        <div class="p-3 education-item">
-                            <div class="education-icon text-success mb-2">
-                                <i class="fas fa-chart-line"></i>
-                            </div>
-                            <h6 class="fw-semibold">Pemantauan</h6>
-                            <p class="text-muted small">Kesehatan rutin</p>
-                        </div>
-                    </div>
-                    <div class="col-4">
-                        <div class="p-3 education-item">
-                            <div class="education-icon text-primary mb-2">
-                                <i class="fas fa-book-reader"></i>
-                            </div>
-                            <h6 class="fw-semibold">Edukasi</h6>
-                            <p class="text-muted small">Materi kesehatan</p>
-                        </div>
-                    </div>
-                    <div class="col-4">
-                        <div class="p-3 education-item">
-                            <div class="education-icon text-warning mb-2">
-                                <i class="fas fa-star"></i>
-                            </div>
-                            <h6 class="fw-semibold">Aktivitas</h6>
-                            <p class="text-muted small">Program sehat</p>
-                        </div>
-                    </div>
-                </div>
+            <div class="flex-grow-1 ms-3">
+              <h5 class="fw-semibold text-dark">Materi Praktis</h5>
+              <p class="text-muted small">Belajar hidup sehat dengan cara yang mudah dipahami dan langsung bisa dipraktikkan.</p>
             </div>
+          </div>
+
+          <div class="d-flex align-items-start mb-4">
+            <div class="flex-shrink-0">
+              <div class="icon-small bg-primary">
+                <i class="fas fa-gamepad"></i>
+              </div>
+            </div>
+            <div class="flex-grow-1 ms-3">
+              <h5 class="fw-semibold text-dark">Metode Menyenangkan</h5>
+              <p class="text-muted small">Games, kuis, dan aktivitas interaktif membuat belajar kesehatan jadi seru.</p>
+            </div>
+          </div>
+
+          <div class="d-flex align-items-start mb-4">
+            <div class="flex-shrink-0">
+              <div class="icon-small bg-warning">
+                <i class="fas fa-users"></i>
+              </div>
+            </div>
+            <div class="flex-grow-1 ms-3">
+              <h5 class="fw-semibold text-dark">Belajar Bersama</h5>
+              <p class="text-muted small">Diskusi kelompok dan sharing session dengan teman-teman sekelas.</p>
+            </div>
+          </div>
         </div>
+      </div>
+
+      <div class="col-lg-6 order-1 order-lg-2 mb-4 mb-lg-0">
+        <div class="d-flex align-items-center mb-4">
+          <div class="icon-wrapper bg-success me-3">
+            <i class="fas fa-laugh-beam"></i>
+          </div>
+          <h2 class="fw-bold text-dark mb-0">Edukasi Kesehatan yang Menyenangkan</h2>
+        </div>
+        <p class="text-muted mb-4">
+          Kami percaya bahwa edukasi kesehatan harus disampaikan dengan cara yang menyenangkan dan mudah dipahami.
+          Melalui berbagai aktivitas interaktif, siswa dapat belajar tentang pentingnya menjaga kesehatan dengan cara yang seru.
+        </p>
+        <div class="row text-center">
+          <div class="col-4">
+            <div class="p-3 education-item">
+              <div class="education-icon text-success mb-2">
+                <i class="fas fa-chart-line"></i>
+              </div>
+              <h6 class="fw-semibold">Pemantauan</h6>
+              <p class="text-muted small">Kesehatan rutin</p>
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="p-3 education-item">
+              <div class="education-icon text-primary mb-2">
+                <i class="fas fa-book-reader"></i>
+              </div>
+              <h6 class="fw-semibold">Edukasi</h6>
+              <p class="text-muted small">Materi kesehatan</p>
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="p-3 education-item">
+              <div class="education-icon text-warning mb-2">
+                <i class="fas fa-star"></i>
+              </div>
+              <h6 class="fw-semibold">Aktivitas</h6>
+              <p class="text-muted small">Program sehat</p>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
 </section>
 
 <!-- SECTION PARTNERS & AWARDS -->
@@ -544,126 +615,66 @@
                 Prestasi yang telah diraih dan dukungan dari brand-brand terkemuka yang peduli lingkungan dalam menciptakan dunia yang lebih hijau dan berkelanjutan.
             </p>
         </div>
-
-        <div class="row g-4">
-            <!-- AWARD 1 -->
-            <div class="col-md-4">
-                <div class="award-card card border-0 shadow-sm rounded-4 h-100 text-center p-4 animate-on-scroll">
-                    <div class="award-icon mb-3">
-                        <i class="fas fa-medal text-warning"></i>
-                        <div class="sparkle sparkle-1">✨</div>
-                        <div class="sparkle sparkle-2">✨</div>
-                        <div class="sparkle sparkle-3">✨</div>
-                    </div>
-                    <h5 class="fw-semibold text-dark mb-3">Eco Innovation Award 2024</h5>
-                    <p class="text-muted">
-                        Penghargaan inovasi teknologi ramah lingkungan
-                    </p>
-                </div>
+<div class="row g-4">
+    <!-- AWARD 1 -->
+    <div class="col-md-4">
+        <div class="award-card card border-0 shadow-sm rounded-4 h-100 text-center p-4 animate-on-scroll">
+            <div class="award-icon mb-3">
+                <i class="fas fa-plus-square text-danger"></i>
+                <div class="sparkle sparkle-1">✨</div>
+                <div class="sparkle sparkle-2">✨</div>
+                <div class="sparkle sparkle-3">✨</div>
             </div>
-            
-            <!-- AWARD 2 -->
-            <div class="col-md-4">
-                <div class="award-card card border-0 shadow-sm rounded-4 h-100 text-center p-4 animate-on-scroll">
-                    <div class="award-icon mb-3">
-                        <i class="fas fa-award text-success"></i>
-                        <div class="sparkle sparkle-1">✨</div>
-                        <div class="sparkle sparkle-2">✨</div>
-                        <div class="sparkle sparkle-3">✨</div>
-                    </div>
-                    <h5 class="fw-semibold text-dark mb-3">Green Champion Award</h5>
-                    <p class="text-muted">
-                        Juara kampanye lingkungan terbaik
-                    </p>
-                </div>
-            </div>
-            
-            <!-- AWARD 3 -->
-            <div class="col-md-4">
-                <div class="award-card card border-0 shadow-sm rounded-4 h-100 text-center p-4 animate-on-scroll">
-                    <div class="award-icon mb-3">
-                        <i class="fas fa-leaf text-primary"></i>
-                        <div class="sparkle sparkle-1">✨</div>
-                        <div class="sparkle sparkle-2">✨</div>
-                        <div class="sparkle sparkle-3">✨</div>
-                    </div>
-                    <h5 class="fw-semibold text-dark mb-3">Sustainability Excellence</h5>
-                    <p class="text-muted">
-                        Penghargaan keunggulan keberlanjutan
-                    </p>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- SECTION SELAMAT DATANG YANG DIPERBAIKI -->
-<section id="welcome-section" class="section-fade py-5">
-    <div class="container">
-        <div class="text-center mb-5">
-            <div class="icon-wrapper bg-primary mx-auto mb-3">
-                <i class="fas fa-heart"></i>
-            </div>
-            <h2 class="fw-bold text-dark mb-3">Selamat Datang di UKS SMKN 8 Jakarta</h2>
-            <p class="text-muted fs-5" style="max-width: 700px; margin: auto;">
-                Kami hadir untuk memberikan layanan kesehatan dasar, edukasi hidup sehat, dan pertolongan pertama bagi seluruh siswa.
+            <h5 class="fw-semibold text-dark mb-3">Palang Merah Indonesia</h5>
+            <p class="text-muted">
+                Bekerja sama dengan PMI setempat
             </p>
         </div>
+    </div>
 
-        <div class="row g-4 justify-content-center">
-            <!-- KARTU BERITA -->
-            <div class="col-md-6 col-lg-4">
-                <div class="card border-0 shadow-sm rounded-4 text-center p-4 hover-card animate-on-scroll">
-                    <div class="card-icon-wrapper mb-3">
-                        <i class="fas fa-newspaper"></i>
-                    </div>
-                    <h5 class="fw-semibold text-dark mb-3">Berita Kesehatan</h5>
-                    <p class="text-muted small mb-4">
-                        Dapatkan informasi terbaru dan tips hidup sehat dari UKS sekolah kita.
-                    </p>
-                    <a href="{{ route('berita.index') }}" 
-                       class="btn btn-hero px-4 py-2 fw-semibold shadow-sm">
-                       <i class="fas fa-newspaper me-2"></i>Baca Berita
-                    </a>
-                </div>
+    
+      
+    <!-- AWARD 2 -->
+    <div class="col-md-4">
+        <div class="award-card card border-0 shadow-sm rounded-4 h-100 text-center p-4 animate-on-scroll">
+            <div class="award-icon mb-3">
+                <i class="fas fa-hospital text-info"></i>
+                <div class="sparkle sparkle-1">✨</div>
+                <div class="sparkle sparkle-2">✨</div>
+                <div class="sparkle sparkle-3">✨</div>
             </div>
-            
-            <!-- KARTU LAYANAN -->
-            <div class="col-md-6 col-lg-4">
-                <div class="card border-0 shadow-sm rounded-4 text-center p-4 hover-card animate-on-scroll">
-                    <div class="card-icon-wrapper mb-3">
-                        <i class="fas fa-first-aid"></i>
-                    </div>
-                    <h5 class="fw-semibold text-dark mb-3">Layanan UKS</h5>
-                    <p class="text-muted small mb-4">
-                        Akses layanan kesehatan dasar dan pertolongan pertama di UKS sekolah.
-                    </p>
-                    <a href="#" 
-                       class="btn btn-hero-outline px-4 py-2 fw-semibold shadow-sm">
-                       <i class="fas fa-arrow-right me-2"></i>Lihat Layanan
-                    </a>
-                </div>
-            </div>
-            
-            <!-- KARTU EDUKASI -->
-            <div class="col-md-6 col-lg-4">
-                <div class="card border-0 shadow-sm rounded-4 text-center p-4 hover-card animate-on-scroll">
-                    <div class="card-icon-wrapper mb-3">
-                        <i class="fas fa-book-medical"></i>
-                    </div>
-                    <h5 class="fw-semibold text-dark mb-3">Edukasi Kesehatan</h5>
-                    <p class="text-muted small mb-4">
-                        Pelajari tips dan informasi kesehatan untuk hidup lebih sehat setiap hari.
-                    </p>
-                    <a href="#" 
-                       class="btn btn-hero px-4 py-2 fw-semibold shadow-sm">
-                       <i class="fas fa-graduation-cap me-2"></i>Pelajari
-                    </a>
-                </div>
-            </div>
+            <h5 class="fw-semibold text-dark mb-3">Mitra Puskesmas Setempat</h5>
+            <p class="text-muted">
+                Bekerja sama dengan puskesmas setempat
+            </p>
         </div>
     </div>
+
+    
+    <!-- AWARD 3 -->
+<div class="col-md-4">
+    <div class="award-card card border-0 shadow-sm rounded-4 h-100 text-center p-4 animate-on-scroll">
+        <div class="award-icon mb-3 position-relative">
+            <!-- Ganti ikon jadi daun (Adiwiyata) -->
+            <i class="fas fa-seedling text-success fa-3x"></i>
+            
+            <!-- Sparkle efek -->
+            <div class="sparkle sparkle-1">✨</div>
+            <div class="sparkle sparkle-2">✨</div>
+            <div class="sparkle sparkle-3">✨</div>
+        </div>
+
+        <h5 class="fw-semibold text-dark mb-3">Sekolah Adiwiyata</h5>
+        <p class="text-muted">
+            SMKN 8 Jakarta meraih penghargaan Sekolah Adiwiyata berkat kepedulian terhadap lingkungan.
+        </p>
+    </div>
+</div>
+
+</div>
+    </div>
 </section>
+
 
 <!-- SECTION VISI & MISI YANG DIPERBAIKI -->
 <section id="vision-mission" class="section-fade py-5">
@@ -679,117 +690,384 @@
         </div>
 
         <div class="row g-5">
-            <!-- VISI -->
-            <div class="col-lg-6">
-                <div class="vision-card card border-0 shadow-lg rounded-4 h-100 animate-on-scroll">
-                    <div class="card-body p-5 position-relative">
-                        <div class="vision-decoration">
-                            <div class="decoration-circle circle-1"></div>
-                            <div class="decoration-circle circle-2"></div>
-                            <div class="decoration-circle circle-3"></div>
-                        </div>
-                        
-                        <div class="text-center mb-4">
-                            <div class="vision-icon-wrapper mb-3">
-                                <i class="fas fa-eye"></i>
+   <!-- VISI -->
+<div class="col-lg-6">
+    <div class="vision-card card border-0 shadow-lg rounded-4 h-100 animate-on-scroll">
+        <div class="card-body p-5 position-relative">
+            <div class="vision-decoration">
+                <div class="decoration-circle circle-1"></div>
+                <div class="decoration-circle circle-2"></div>
+                <div class="decoration-circle circle-3"></div>
+            </div>
+
+            <div class="text-center mb-4">
+                <div class="vision-icon-wrapper mb-3">
+                    <i class="fas fa-eye"></i>
+                </div>
+                <h3 class="fw-bold text-danger mb-3">Visi Kami</h3>
+            </div>
+
+            <div class="vision-content">
+                <ul class="vision-list text-start fs-5 fw-medium text-dark mb-0">
+                    <li>
+                        <div class="d-flex align-items-start">
+                            <div class="vision-item-icon me-3">
+                                <i class="fas fa-leaf text-success"></i>
                             </div>
-                            <h3 class="fw-bold text-danger mb-3">Visi Kami</h3>
+                            <span>Menjadikan lingkungan sekolah yang sehat, hijau, bersih, dan indah.</span>
                         </div>
-                        
-                        <div class="vision-content text-center">
-                            <p class="vision-text fs-5 fw-medium text-dark mb-4">
-                                "Menjadi UKS unggul dalam memberikan layanan kesehatan, meningkatkan kesadaran hidup sehat, dan menciptakan lingkungan sekolah yang aman dan nyaman."
-                            </p>
-                            
-                            <div class="vision-highlights">
-                                <div class="row text-center">
-                                    <div class="col-4">
-                                        <div class="p-3">
-                                            <div class="highlight-icon text-primary mb-2">
-                                                <i class="fas fa-heartbeat"></i>
-                                            </div>
-                                            <h6 class="fw-semibold">Layanan Unggul</h6>
-                                        </div>
-                                    </div>
-                                    <div class="col-4">
-                                        <div class="p-3">
-                                            <div class="highlight-icon text-success mb-2">
-                                                <i class="fas fa-brain"></i>
-                                            </div>
-                                            <h6 class="fw-semibold">Kesadaran Sehat</h6>
-                                        </div>
-                                    </div>
-                                    <div class="col-4">
-                                        <div class="p-3">
-                                            <div class="highlight-icon text-info mb-2">
-                                                <i class="fas fa-shield-alt"></i>
-                                            </div>
-                                            <h6 class="fw-semibold">Lingkungan Aman</h6>
-                                        </div>
-                                    </div>
-                                </div>
+                    </li>
+                    <li>
+                        <div class="d-flex align-items-start">
+                            <div class="vision-item-icon me-3">
+                                <i class="fas fa-graduation-cap text-primary"></i>
                             </div>
+                            <span>Menciptakan suasana belajar yang nyaman dan kondusif bagi seluruh warga sekolah.</span>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="d-flex align-items-start">
+                            <div class="vision-item-icon me-3">
+                                <i class="fas fa-heartbeat text-danger"></i>
+                            </div>
+                            <span>Meningkatkan kesadaran dan kepedulian siswa terhadap kesehatan diri dan orang lain.</span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Additional Icons Section -->
+            <div class="vision-supporting-icons mt-4 pt-4 border-top">
+                <div class="row text-center">
+                    <div class="col-4">
+                        <div class="supporting-icon-item">
+                            <i class="fas fa-recycle text-success mb-2"></i>
+                            <p class="small mb-0 fw-semibold">Lingkungan Hijau</p>
                         </div>
                     </div>
-                </div>
-            </div>
-            
-            <!-- MISI -->
-            <div class="col-lg-6">
-                <div class="mission-card card border-0 shadow-lg rounded-4 h-100 animate-on-scroll">
-                    <div class="card-body p-5">
-                        <div class="text-center mb-4">
-                            <div class="mission-icon-wrapper mb-3">
-                                <i class="fas fa-bullseye"></i>
-                            </div>
-                            <h3 class="fw-bold text-success mb-3">Misi Kami</h3>
+                    <div class="col-4">
+                        <div class="supporting-icon-item">
+                            <i class="fas fa-hand-holding-heart text-danger mb-2"></i>
+                            <p class="small mb-0 fw-semibold">Peduli Sesama</p>
                         </div>
-                        
-                        <div class="mission-content">
-                            <div class="mission-item d-flex align-items-start mb-4">
-                                <div class="mission-step me-3">
-                                    <div class="step-number">1</div>
-                                </div>
-                                <div class="mission-text flex-grow-1">
-                                    <h5 class="fw-semibold text-dark mb-2">Pertolongan Pertama</h5>
-                                    <p class="text-muted mb-0">Memberikan pertolongan pertama yang cepat dan tepat kepada siswa yang membutuhkan.</p>
-                                </div>
-                            </div>
-                            
-                            <div class="mission-item d-flex align-items-start mb-4">
-                                <div class="mission-step me-3">
-                                    <div class="step-number">2</div>
-                                </div>
-                                <div class="mission-text flex-grow-1">
-                                    <h5 class="fw-semibold text-dark mb-2">Edukasi Kesehatan</h5>
-                                    <p class="text-muted mb-0">Mengedukasi tentang pola hidup bersih dan sehat melalui program yang menarik.</p>
-                                </div>
-                            </div>
-                            
-                            <div class="mission-item d-flex align-items-start mb-4">
-                                <div class="mission-step me-3">
-                                    <div class="step-number">3</div>
-                                </div>
-                                <div class="mission-text flex-grow-1">
-                                    <h5 class="fw-semibold text-dark mb-2">Kerjasama Strategis</h5>
-                                    <p class="text-muted mb-0">Membangun kerjasama yang baik dengan puskesmas dan instansi terkait lainnya.</p>
-                                </div>
-                            </div>
-                            
-                            <div class="mission-item d-flex align-items-start">
-                                <div class="mission-step me-3">
-                                    <div class="step-number">4</div>
-                                </div>
-                                <div class="mission-text flex-grow-1">
-                                    <h5 class="fw-semibold text-dark mb-2">Lingkungan Sehat</h5>
-                                    <p class="text-muted mb-0">Menjaga kebersihan dan kesehatan lingkungan sekolah secara berkelanjutan.</p>
-                                </div>
-                            </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="supporting-icon-item">
+                            <i class="fas fa-brain text-info mb-2"></i>
+                            <p class="small mb-0 fw-semibold">Pendidikan Berkualitas</p>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
+</div>
+
+<style>
+.vision-card {
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    border-left: 5px solid #dc3545 !important;
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.vision-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.1) !important;
+}
+
+.vision-icon-wrapper {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, #dc3545, #ff6b7a);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    color: white;
+    font-size: 2rem;
+    box-shadow: 0 8px 20px rgba(220, 53, 69, 0.3);
+    transition: all 0.3s ease;
+}
+
+.vision-card:hover .vision-icon-wrapper {
+    transform: scale(1.1) rotate(5deg);
+}
+
+.vision-decoration {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.decoration-circle {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.1;
+    animation: float 6s ease-in-out infinite;
+}
+
+.circle-1 {
+    width: 120px;
+    height: 120px;
+    background: #dc3545;
+    top: -30px;
+    right: -30px;
+    animation-delay: 0s;
+}
+
+.circle-2 {
+    width: 80px;
+    height: 80px;
+    background: #28a745;
+    bottom: 20px;
+    left: -20px;
+    animation-delay: 2s;
+}
+
+.circle-3 {
+    width: 60px;
+    height: 60px;
+    background: #007bff;
+    top: 50%;
+    right: 30px;
+    animation-delay: 4s;
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0) rotate(0deg);
+    }
+    50% {
+        transform: translateY(-10px) rotate(180deg);
+    }
+}
+
+.vision-list {
+    list-style: none;
+    padding: 0;
+}
+
+.vision-list li {
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 12px;
+    border-left: 3px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.vision-list li:hover {
+    background: rgba(220, 53, 69, 0.05);
+    border-left-color: #dc3545;
+    transform: translateX(5px);
+}
+
+.vision-item-icon {
+    width: 40px;
+    height: 40px;
+    background: rgba(220, 53, 69, 0.1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.3s ease;
+}
+
+.vision-list li:hover .vision-item-icon {
+    background: rgba(220, 53, 69, 0.2);
+    transform: scale(1.1);
+}
+
+.vision-item-icon i {
+    font-size: 1.2rem;
+}
+
+.vision-supporting-icons {
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 15px;
+    padding: 1.5rem;
+}
+
+.supporting-icon-item {
+    transition: all 0.3s ease;
+    padding: 0.5rem;
+    border-radius: 10px;
+}
+
+.supporting-icon-item:hover {
+    background: rgba(220, 53, 69, 0.05);
+    transform: translateY(-3px);
+}
+
+.supporting-icon-item i {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.supporting-icon-item:hover i {
+    transform: scale(1.2);
+}
+
+.supporting-icon-item p {
+    font-size: 0.8rem;
+    line-height: 1.3;
+}
+
+/* Animasi untuk scroll */
+.animate-on-scroll {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.6s ease;
+}
+
+.animate-on-scroll.animated {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .vision-card .card-body {
+        padding: 2rem !important;
+    }
+    
+    .vision-list li {
+        padding: 0.75rem;
+    }
+    
+    .vision-item-icon {
+        width: 35px;
+        height: 35px;
+    }
+    
+    .vision-item-icon i {
+        font-size: 1rem;
+    }
+    
+    .supporting-icon-item i {
+        font-size: 1.5rem;
+    }
+    
+    .supporting-icon-item p {
+        font-size: 0.7rem;
+    }
+}
+</style>
+
+<script>
+// Animasi scroll
+document.addEventListener('DOMContentLoaded', function() {
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('animated');
+            }
+        });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.animate-on-scroll').forEach(el => {
+        observer.observe(el);
+    });
+
+    // Hover effects for vision items
+    const visionItems = document.querySelectorAll('.vision-list li');
+    visionItems.forEach(item => {
+        item.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateX(5px)';
+        });
+        
+        item.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateX(0)';
+        });
+    });
+});
+</script>
+
+    <!-- MISI -->
+    <div class="col-lg-6">
+        <div class="mission-card card border-0 shadow-lg rounded-4 h-100 animate-on-scroll">
+            <div class="card-body p-5">
+                <div class="text-center mb-4">
+                    <div class="mission-icon-wrapper mb-3">
+                        <i class="fas fa-bullseye"></i>
+                    </div>
+                    <h3 class="fw-bold text-success mb-3">Misi Kami</h3>
+                </div>
+
+                <div class="mission-content">
+                    <div class="mission-item d-flex align-items-start mb-4">
+                        <div class="mission-step me-3">
+                            <div class="step-number">1</div>
+                        </div>
+                        <div class="mission-text flex-grow-1">
+                            <h5 class="fw-semibold text-dark mb-2">Peningkatan Iman dan Taqwa</h5>
+                            <p class="text-muted mb-0">Memberikan pembinaan mental dan spiritual yang relevan dengan kesehatan fisik dan mental.</p>
+                        </div>
+                    </div>
+
+                    <div class="mission-item d-flex align-items-start mb-4">
+                        <div class="mission-step me-3">
+                            <div class="step-number">2</div>
+                        </div>
+                        <div class="mission-text flex-grow-1">
+                            <h5 class="fw-semibold text-dark mb-2">Peningkatan Pengetahuan dan Keterampilan</h5>
+                            <p class="text-muted mb-0">Mengedukasi siswa tentang pentingnya menjaga kesehatan melalui penyuluhan dan demonstrasi keterampilan.</p>
+                        </div>
+                    </div>
+
+                    <div class="mission-item d-flex align-items-start mb-4">
+                        <div class="mission-step me-3">
+                            <div class="step-number">3</div>
+                        </div>
+                        <div class="mission-text flex-grow-1">
+                            <h5 class="fw-semibold text-dark mb-2">Lingkungan Hijau dan Sehat</h5>
+                            <p class="text-muted mb-0">Melaksanakan program kebersihan, pengawasan lingkungan, dan penghijauan di sekolah.</p>
+                        </div>
+                    </div>
+
+                    <div class="mission-item d-flex align-items-start mb-4">
+                        <div class="mission-step me-3">
+                            <div class="step-number">4</div>
+                        </div>
+                        <div class="mission-text flex-grow-1">
+                            <h5 class="fw-semibold text-dark mb-2">Pelayanan Kesehatan Dasar</h5>
+                            <p class="text-muted mb-0">Memberikan pertolongan pertama, pemeriksaan rutin, dan promosi kesehatan bagi warga sekolah.</p>
+                        </div>
+                    </div>
+
+                    <div class="mission-item d-flex align-items-start mb-4">
+                        <div class="mission-step me-3">
+                            <div class="step-number">5</div>
+                        </div>
+                        <div class="mission-text flex-grow-1">
+                            <h5 class="fw-semibold text-dark mb-2">Kepedulian terhadap Lingkungan</h5>
+                            <p class="text-muted mb-0">Menumbuhkan rasa peduli siswa terhadap kesehatan dan kebersihan lingkungan sekitar.</p>
+                        </div>
+                    </div>
+
+                    <div class="mission-item d-flex align-items-start">
+                        <div class="mission-step me-3">
+                            <div class="step-number">6</div>
+                        </div>
+                        <div class="mission-text flex-grow-1">
+                            <h5 class="fw-semibold text-dark mb-2">Pengembangan Karakter</h5>
+                            <p class="text-muted mb-0">Mengintegrasikan pendidikan karakter agar siswa memiliki tanggung jawab, disiplin, dan toleransi.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
         
         <!-- NILAI-NILAI UTAMA -->
         <div class="row mt-5">

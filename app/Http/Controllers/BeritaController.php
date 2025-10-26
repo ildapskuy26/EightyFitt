@@ -8,9 +8,31 @@ use Illuminate\Support\Facades\Storage;
 
 class BeritaController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $berita = Berita::latest()->paginate(10);
+        $query = Berita::query();
+
+        // 🔍 Filter berdasarkan judul berita
+        if ($request->filled('judul')) {
+            $query->where('judul', 'like', "%{$request->judul}%");
+        }
+
+        // 📅 Filter berdasarkan tanggal dibuat
+        if ($request->filled('tanggal')) {
+            $query->whereDate('created_at', $request->tanggal);
+        }
+
+        // 👤 Filter berdasarkan pembuat (role)
+        if ($request->filled('pembuat')) {
+            // Pastikan ada relasi user() di model Berita
+            $query->whereHas('user', function ($q) use ($request) {
+                $q->where('role', $request->pembuat);
+            });
+        }
+
+        // Urutkan berita terbaru dan aktifkan pagination + query string
+        $berita = $query->orderBy('created_at', 'desc')->paginate(10)->withQueryString();
+
         return view('berita.index', compact('berita'));
     }
 
@@ -36,6 +58,9 @@ class BeritaController extends Controller
         // Tambahkan kolom 'views' default 0
         $data['views'] = 0;
 
+        // Simpan id user pembuat berita (opsional tapi disarankan)
+        $data['user_id'] = auth()->id();
+
         Berita::create($data);
 
         return redirect()->route('berita.index')->with('success', 'Berita berhasil ditambahkan!');
@@ -43,10 +68,9 @@ class BeritaController extends Controller
 
     public function show(Berita $berita)
     {
-        // === Tambahkan logika untuk hitung view ===
+        // === Hitung jumlah view (sekali per sesi) ===
         $sessionKey = 'berita_viewed_' . $berita->id;
 
-        // Hanya tambahkan 1 kali per sesi user
         if (!session()->has($sessionKey)) {
             $berita->increment('views');
             session([$sessionKey => true]);

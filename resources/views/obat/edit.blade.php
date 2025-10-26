@@ -48,14 +48,17 @@
 
                 {{-- Bentuk Obat --}}
                 <div class="mb-3">
-                    <label class="form-label fw-semibold">Bentuk Obat</label>
-                    <select name="bentuk_obat" class="form-select rounded-pill" required>
-                        <option value="">- Pilih Bentuk -</option>
-                        <option value="Tablet" {{ old('bentuk_obat', $obat->bentuk_obat) == 'Tablet' ? 'selected' : '' }}>Tablet</option>
-                        <option value="Sirup" {{ old('bentuk_obat', $obat->bentuk_obat) == 'Sirup' ? 'selected' : '' }}>Sirup</option>
-                        <option value="Kapsul" {{ old('bentuk_obat', $obat->bentuk_obat) == 'Kapsul' ? 'selected' : '' }}>Kapsul</option>
-                    </select>
-                </div>
+                <label class="form-label fw-semibold">Bentuk</label>
+                <select name="bentuk_obat" class="form-select form-select-lg rounded-3 shadow-sm" required>
+                    <option value="">- Pilih Bentuk -</option>
+                    <option value="Tablet" {{ old('bentuk_obat') == 'Tablet' ? 'selected' : '' }}>Tablet</option>
+                    <option value="Sirup" {{ old    ('bentuk_obat') == 'Sirup' ? 'selected' : '' }}>Sirup</option>
+                    <option value="Kapsul" {{ old('bentuk_obat') == 'Kapsul' ? 'selected' : '' }}>Kapsul</option>
+                    <option value="Tempel" {{ old('bentuk_obat') == 'Tempel' ? 'selected' : '' }}>Tempel</option>
+                    <option value="Gosok" {{ old('bentuk_obat') == 'Gosok' ? 'selected' : '' }}>Gosok</option>
+                    <option value="Hirup" {{ old('bentuk_obat') == 'Hirup' ? 'selected' : '' }}>Hirup</option>
+                </select>
+            </div>
 
                 {{-- Dosis dan Stok --}}
                 <div class="row">

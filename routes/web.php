@@ -16,6 +16,7 @@ use App\Http\Controllers\Auth\SiswaAuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PembukuanController;
 use App\Http\Controllers\LikeCommentController;
+use App\Http\Controllers\TanggapanController;
 
 // ====================
 // Halaman Utama
@@ -23,11 +24,30 @@ use App\Http\Controllers\LikeCommentController;
 Route::get('/', [BeritaController::class, 'index'])->name('beranda');
 Route::view('/tentang', 'pages.tentang')->name('tentang');
 
+// Admin/petugas
+Route::middleware(['auth', 'role:admin,petugas'])->group(function () {
+    Route::get('/admin/tanggapan', [TanggapanController::class, 'index'])->name('admin.tanggapan');
+    Route::post('/admin/tanggapan/{id}/status', [TanggapanController::class, 'updateStatus'])->name('admin.tanggapan.updateStatus');
+});
+
 // ====================
 // Halaman Kontak
 // ====================
-Route::get('/kontak', [KontakController::class, 'index'])->name('kontak.index');
-Route::post('/kontak/send', [KontakController::class, 'send'])->name('kontak.send');
+
+Route::get('/kontak', function () {
+    return view('kontak.index');
+})->name('kontak.index');
+
+Route::get('/tanggapan', [TanggapanController::class, 'index'])
+    ->middleware(['auth', 'role:admin,petugas'])
+    ->name('admin.tanggapan.index');
+
+Route::post('/kontak/store', [TanggapanController::class, 'store'])
+    ->name('kontak.store');
+
+Route::patch('/tanggapan/{id}/read', [TanggapanController::class, 'markAsRead'])
+    ->middleware(['auth', 'role:admin,petugas'])
+    ->name('tanggapan.read');
 
 // ====================
 // Login & Register Siswa (guard: siswa)
