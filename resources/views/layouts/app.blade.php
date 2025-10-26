@@ -706,7 +706,7 @@
         <span>{{ auth()->user()->nama ?? auth()->user()->name ?? 'Siswa' }}</span>
       </div>
       <form action="{{ route('logout') }}" method="POST" class="ms-2">@csrf
-        <button class="btn btn-logout btn-sm">Logout</button>
+        <button class="btn-logout">Logout</button>
       </form>
     </div>
   </nav>
