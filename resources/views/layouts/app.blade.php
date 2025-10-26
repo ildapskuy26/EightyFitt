@@ -26,8 +26,9 @@
     --text-light: #fff;
     --bg-body: linear-gradient(135deg, #F9F7F0 0%, #F5F3E7 100%);
     --navbar-bg: rgba(245, 243, 231, 0.95);
-    --sidebar-bg: linear-gradient(180deg, #F5F3E7 0%, #E8E4D5 100%);
     --sidebar-width: 260px;
+    --sidebar-bg: linear-gradient(180deg, #F7EED3 0%, #E9D8A6 100%);
+
     --sidebar-collapsed: 70px;
     /* Warna hijau untuk navbar siswa */
     --green-main: #2E7D32;
@@ -606,6 +607,39 @@
       gap: 10px;
     }
   }
+  .btn-login {
+  background: var(--green-main);
+  color: white !important;
+  font-weight: 600;
+  padding: 8px 20px;
+  border-radius: 20px;
+  border: none;
+  transition: all 0.3s ease;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.btn-login:hover {
+  background: var(--green-btn);
+  color: white !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(27, 94, 32, 0.2);
+}
+
+@media (max-width: 992px) {
+  #guestNavbar {
+    background: rgba(255, 255, 255, 0.95);
+    padding: 15px;
+    border-radius: 15px;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+    margin-top: 10px;
+  }
+  
+  .btn-login {
+    width: 100%;
+    margin-top: 15px;
+    text-align: center;
+  }
+}
   </style>
 </head>
 <body>
@@ -718,6 +752,25 @@
 @endauth
 
 @guest
+<nav class="navbar navbar-expand-lg navbar-rounded">
+  <a class="navbar-brand" href="{{ route('beranda') }}">
+    <img src="{{ asset('images/logouks.png') }}" alt="Logo">
+    <span>UKS SMKN 8</span>
+  </a>
+  
+  <button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="collapse" data-bs-target="#guestNavbar" aria-controls="guestNavbar" aria-expanded="false" aria-label="Toggle navigation">
+    <i class="bi bi-list" style="font-size: 1.5rem; color: var(--green-main);"></i>
+  </button>
+  
+  
+    <div class="d-flex align-items-center gap-2">
+      <a href="{{ route('login') }}" class="btn btn-login">
+        <i class="bi bi-box-arrow-in-right me-1"></i>
+        Login
+      </a>
+    </div>
+  </div>
+</nav>
   <div class="container mt-5 pt-5">
     @yield('content')
   </div>

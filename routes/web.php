@@ -21,8 +21,9 @@ use App\Http\Controllers\TanggapanController;
 // ====================
 // Halaman Utama
 // ====================
-Route::get('/', [BeritaController::class, 'index'])->name('beranda');
-Route::view('/tentang', 'pages.tentang')->name('tentang');
+// Route::get('/', [BeritaController::class, 'index'])->name('beranda');
+// Route::view('/tentang', 'pages.tentang')->name('tentang');
+Route::get('/', [DashboardController::class, 'welcome'])->name('beranda');
 
 // Admin/petugas
 Route::middleware(['auth', 'role:admin,petugas'])->group(function () {
@@ -75,10 +76,9 @@ Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
 
-Route::get('/', function () {
-    return view('/auth/login');
-})->name('home');
 
+Route::get('/', [DashboardController::class, 'welcome'])->name('beranda');
+Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 // ====================
 // Profile (user default, bukan siswa)
 // ====================

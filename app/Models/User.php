@@ -63,4 +63,11 @@ class User extends Authenticatable
     return $this->hasMany(Kunjungan::class, 'id_petugas', 'id');
 }
 
+    public function siswa()
+{
+    return $this->belongsTo(Siswa::class, 'nis', 'nis');
+}
+
+
+
 }

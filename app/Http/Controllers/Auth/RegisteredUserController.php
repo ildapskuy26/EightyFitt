@@ -28,27 +28,33 @@ class RegisteredUserController extends Controller
      * @throws \Illuminate\Validation\ValidationException
      */
     public function store(Request $request): RedirectResponse
-    {
-        $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
-        ]);
+{
+    $request->validate([
+        'name' => ['required', 'string', 'max:255'],
+        'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
+        'password' => ['required', 'confirmed', Rules\Password::defaults()],
+    ]);
 
-        // Cari siswa berdasarkan nama yang diinput user
-        $siswa = \App\Models\Siswa::where('nama', $request->name)->first();
+    // Cek apakah siswa ada di database
+    $siswa = \App\Models\Siswa::where('nama', $request->name)->first();
 
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'nis' => $siswa?->nis,
-        ]);
-        
-        event(new Registered($user));
-
-        Auth::login($user);
-
-        return redirect(route('dashboard', absolute: false));
+    if (!$siswa) {
+        return back()->withErrors(['name' => 'Nama ini tidak terdaftar di data siswa.']);
     }
+
+    // Buat user baru dengan NIS dari tabel siswa
+    $user = User::create([
+        'name' => $request->name,
+        'email' => $request->email,
+        'password' => Hash::make($request->password),
+        'nis' => $siswa->nis, // relasi langsung
+        'role' => 'siswa', // opsional: beri role default
+    ]);
+
+    event(new Registered($user));
+    Auth::login($user);
+
+    return redirect()->route('dashboard');
+}
+
 }

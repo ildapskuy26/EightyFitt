@@ -9,6 +9,9 @@ use App\Models\Siswa;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use Illuminate\Support\Facades\DB;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
+use PhpOffice\PhpSpreadsheet\Reader\Xls;
+use PhpOffice\PhpSpreadsheet\Reader\Csv;
 
 class AdminController extends Controller
 {
@@ -28,52 +31,43 @@ class AdminController extends Controller
         'files.*' => 'mimes:xlsx,xls,csv'
     ]);
 
+    ini_set('max_execution_time', 600); // 10 menit
+    ini_set('memory_limit', '1024M');   // 1GB RAM
+
     try {
         DB::beginTransaction();
         $totalImported = 0;
 
         foreach ($request->file('files') as $file) {
-            $extension = $file->getClientOriginalExtension();
+            $extension = strtolower($file->getClientOriginalExtension());
+            $path = $file->getRealPath();
 
+            // === CSV lebih ringan ===
             if ($extension === 'csv') {
-                // === Jika format CSV ===
-                $handle = fopen($file->getRealPath(), 'r');
-                $header = true;
-                while (($row = fgetcsv($handle, 1000, ',')) !== false) {
-                    if ($header) {
-                        $header = false;
-                        continue; // skip baris header
-                    }
+                $reader = new Csv();
+                $reader->setInputEncoding('UTF-8');
+                $reader->setDelimiter(',');
+            } 
+            // === XLSX & XLS pakai readDataOnly biar cepat ===
+            elseif ($extension === 'xlsx') {
+                $reader = new Xlsx();
+                $reader->setReadDataOnly(true);
+            } 
+            else {
+                $reader = new Xls();
+                $reader->setReadDataOnly(true);
+            }
 
-                    $nis = trim($row[0] ?? '');
-                    $nama = trim($row[1] ?? '');
-                    $kelas = trim($row[2] ?? '');
-                    $jurusan = trim($row[3] ?? '');
+            $spreadsheet = $reader->load($path);
+            $sheet = $spreadsheet->getActiveSheet();
+            $highestRow = $sheet->getHighestRow();
+            $chunkSize = 500; // proses per 500 baris
 
-                    if (empty($nis) || str_contains(strtolower($nis), 'tahun pelajaran')) continue;
-                    $nis = substr($nis, 0, 20);
+            for ($startRow = 2; $startRow <= $highestRow; $startRow += $chunkSize) {
+                $endRow = min($startRow + $chunkSize - 1, $highestRow);
+                $rows = $sheet->rangeToArray("A{$startRow}:D{$endRow}", null, true, true, true);
 
-                    \App\Models\Siswa::updateOrCreate(
-                        ['nis' => $nis],
-                        [
-                            'nama' => $nama,
-                            'kelas' => $kelas,
-                            'jurusan' => $jurusan,
-                            'riwayat_penyakit' => null,
-                        ]
-                    );
-                    $totalImported++;
-                }
-                fclose($handle);
-            } else {
-                // === Jika format Excel (xls/xlsx) ===
-                $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($file->getRealPath());
-                $sheet = $spreadsheet->getActiveSheet();
-                $rows = $sheet->toArray(null, true, true, true);
-
-                foreach ($rows as $index => $row) {
-                    if ($index == 1) continue; // skip header
-
+                foreach ($rows as $row) {
                     $nis = trim($row['A'] ?? '');
                     $nama = trim($row['B'] ?? '');
                     $kelas = trim($row['C'] ?? '');
@@ -91,6 +85,7 @@ class AdminController extends Controller
                             'riwayat_penyakit' => null,
                         ]
                     );
+
                     $totalImported++;
                 }
             }
@@ -103,6 +98,6 @@ class AdminController extends Controller
         return back()->with('error', '❌ Gagal import data: ' . $e->getMessage());
     }
 }
-
-
 }
+
+
