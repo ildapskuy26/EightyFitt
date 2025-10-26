@@ -5,18 +5,18 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Siswa;
 use App\Models\Kunjungan;
+use Illuminate\Support\Facades\Auth;
 
 class SiswaController extends Controller
 {
 
-public function home()
+    public function home()
     {
-        return view('layouts.siswa.dashboard');
+        return view('siswa.dashboard');
     }
 
     public function riwayat()
     {
-        $riwayats = Kunjungan::all(); // atau query sesuai kebutuhan
-    return view('riwayat', compact('riwayats'));
+        dd(Auth::check(), Auth::user(), Auth::getDefaultDriver());
     }
 }

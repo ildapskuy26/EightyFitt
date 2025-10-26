@@ -20,12 +20,6 @@ class SiswaManagementController extends Controller
         return view('siswa.index', compact('siswa'));
     }
 
-    // Form tambah siswa
-    public function create()
-    {
-        return view('siswa.create');
-    }
-
     // Simpan siswa baru
     public function store(Request $request)
     {
