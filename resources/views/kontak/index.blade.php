@@ -955,7 +955,7 @@
                     </ul>
                     <div class="mt-4">
                         <p class="mb-2"><strong>Status Saat Ini:</strong></p>
-                        <span class="badge bg-success fs-6" id="current-status">Memuat...</span>
+                        <span class="badge bg-success fs-6" style="color: beige;" id="current-status">Memuat...</span>
                     </div>
                 </div>
             </div>
@@ -1010,7 +1010,7 @@
                 <p class="section-subtitle">Kirim pesan kepada kami untuk konsultasi, informasi, atau pertanyaan lainnya</p>
                 
                 <div class="contact-form">
-                    <form action="{{ route('kontak.store') }}" method="POST" id="contactForm">
+                    <form action="{{ route('kontak.store') }}" method="POST">
                         @csrf
                         <div class="row">
                             <div class="col-md-6">

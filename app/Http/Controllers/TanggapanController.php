@@ -9,15 +9,22 @@ class TanggapanController extends Controller
 {
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'nama' => 'required|string|max:100',
-            'email' => 'required|email',
-            'pesan' => 'required|string|max:1000',
+        $request->validate([
+            'nama'   => 'required|string|max:255',
+            'email'  => 'required|email|max:255',
+            'subjek' => 'required|string|max:255',
+            'pesan'  => 'required|string',
         ]);
 
-        Tanggapan::create($validated);
+        Tanggapan::create([
+            'nama'   => $request->nama,
+            'email'  => $request->email,
+            'subjek' => $request->subjek,
+            'pesan'  => $request->pesan,
+            'status' => 'baru',
+        ]);
 
-        return redirect()->back()->with('success', 'Terima kasih! Pesan Anda telah dikirim.');
+        return redirect()->back()->with('success', 'Tanggapan berhasil dikirim!');
     }
 
     // Tampilkan semua tanggapan (untuk admin/petugas)
