@@ -25,4 +25,8 @@ class DashboardController extends Controller
 
     return view('dashboard', compact('riwayat'));
     }
+public function welcome()
+{
+    return view('welcome');
+}
 }

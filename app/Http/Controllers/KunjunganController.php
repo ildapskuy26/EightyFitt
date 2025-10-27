@@ -22,15 +22,38 @@ class KunjunganController extends Controller
      */
     public function index(Request $request)
     {
+
         $query = Kunjungan::with(['petugas', 'obat']);
 
-        // 🔍 Filter pencarian
-        if ($request->filled('search')) {
-            $query->where(function ($q) use ($request) {
-                $q->where('nama', 'like', '%' . $request->search . '%')
-                  ->orWhere('nis', 'like', '%' . $request->search . '%');
-            });
-        }
+
+
+    // Filter pencarian
+    if ($request->filled('keyword')) {
+        $query->where(function ($q) use ($request) {
+            $q->where('nis', 'like', "%{$request->keyword}%")
+              ->orWhere('nama', 'like', "%{$request->keyword}%");
+        });
+    }
+
+    // Filter kelas
+    if ($request->filled('kelas')) {
+        $query->where('kelas', 'like', "%{$request->kelas}%");
+    }
+
+    // Filter jurusan
+    if ($request->filled('jurusan')) {
+        $query->where('jurusan', 'like', "%{$request->jurusan}%");
+    }
+
+    // Filter rentang tanggal
+    if ($request->filled('tanggal_mulai') && $request->filled('tanggal_selesai')) {
+        $query->whereBetween('waktu_kedatangan', [
+            $request->tanggal_mulai . ' 00:00:00',
+            $request->tanggal_selesai . ' 23:59:59'
+        ]);
+    }
+
+    $kunjungan = $query->latest()->get();
 
         // 🏫 Filter kelas dan jurusan
         if ($request->filled('kelas')) {

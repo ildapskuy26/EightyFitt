@@ -2,15 +2,12 @@
 
 namespace App\Models;
 
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\Model;
 
-class Siswa extends Authenticatable
+class Siswa extends Model
 {
-    use HasFactory, Notifiable;
+    use HasFactory;
 
     protected $table = 'siswa';
 
@@ -22,35 +19,21 @@ class Siswa extends Authenticatable
         'riwayat_penyakit',
     ];
 
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
-
-    /**
-     * Otomatis hash password hanya jika belum di-hash.
-     */
-    public function setPasswordAttribute($value)
-    {
-        if (!$value) {
-            return;
-        }
-
-        // Cegah hashing ulang jika password sudah di-hash
-        if (Str::startsWith($value, '$2y$')) {
-            $this->attributes['password'] = $value;
-        } else {
-            $this->attributes['password'] = Hash::make($value);
-        }
-    }
-
     /**
      * Relasi ke tabel kunjungan.
-     * Asumsi: tabel 'kunjungan' memiliki kolom 'nis' sebagai foreign key.
+     * Kunjungan punya kolom 'siswa_id'.
      */
     public function kunjungan()
     {
-        return $this->hasMany(Kunjungan::class, 'nis', 'nis');
+        return $this->hasMany(Kunjungan::class, 'siswa_id', 'id');
+    }
+
+    /**
+     * Relasi ke tabel users.
+     * 1 siswa punya 1 akun user (opsional).
+     */
+    public function user()
+    {
+        return $this->hasOne(User::class);
     }
 }
-            
