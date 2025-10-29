@@ -23,12 +23,15 @@ use App\Http\Controllers\TanggapanController;
 // ====================
 // Route::get('/', [BeritaController::class, 'index'])->name('beranda');
 // Route::view('/tentang', 'pages.tentang')->name('tentang');
-Route::get('/', [DashboardController::class, 'welcome'])->name('beranda');
+// Serve berita index as the home page instead of the welcome/dashboard page
+Route::get('/', [BeritaController::class, 'index'])->name('beranda');
 
-// Admin/petugas
-Route::middleware(['auth', 'role:admin,petugas'])->group(function () {
+// Admin-only tanggapan routes
+Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin/tanggapan', [TanggapanController::class, 'index'])->name('admin.tanggapan');
     Route::post('/admin/tanggapan/{id}/status', [TanggapanController::class, 'updateStatus'])->name('admin.tanggapan.updateStatus');
+    Route::delete('/admin/tanggapan/{id}', [TanggapanController::class, 'destroy'])->name('admin.tanggapan.destroy');
+    Route::patch('/tanggapan/{id}/read', [TanggapanController::class, 'markAsRead'])->name('tanggapan.read');
 });
 
 // ====================
@@ -39,16 +42,11 @@ Route::get('/kontak', function () {
     return view('kontak.index');
 })->name('kontak.index');
 
-Route::get('/tanggapan', [TanggapanController::class, 'index'])
-    ->middleware(['auth', 'role:admin,petugas'])
-    ->name('admin.tanggapan.index');
+// Legacy route removed; admin tanggapan handled under admin-only group above.
 
 Route::post('/kontak/store', [TanggapanController::class, 'store'])
     ->name('kontak.store');
-
-Route::patch('/tanggapan/{id}/read', [TanggapanController::class, 'markAsRead'])
-    ->middleware(['auth', 'role:admin,petugas'])
-    ->name('tanggapan.read');
+// Note: `tanggapan.read` is defined in the admin-only group above to restrict access to admins.
 
 // ====================
 // Login & Register Siswa (guard: siswa)
@@ -77,7 +75,8 @@ Route::get('/dashboard', [DashboardController::class, 'index'])
     ->name('dashboard');
 
 
-Route::get('/', [DashboardController::class, 'welcome'])->name('beranda');
+// Deprecated: original root route to dashboard/welcome. Kept commented in case needed later.
+// Route::get('/', [DashboardController::class, 'welcome'])->name('beranda');
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 // ====================
 // Profile (user default, bukan siswa)

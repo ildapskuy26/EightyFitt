@@ -17,7 +17,7 @@
                 </div>
                 <div class="d-flex align-items-center gap-2 animate-slide-in-right">
                     <span class="badge bg-primary fs-6 pulse" style="color: white;">
-                        <i class="bi bi-envelope me-1" ></i>
+                        <i class="bi bi-envelope me-1"></i>
                         {{ $tanggapans->total() }} Total
                     </span>
                 </div>
@@ -63,11 +63,24 @@
     <div class="card shadow-lg border-0 rounded-4 overflow-hidden animate-slide-up">
         <div class="card-header bg-gradient-primary text-white py-3">
             <div class="row align-items-center">
-                <div class="col">
+                <div class="col-md-6">
                     <h5 class="mb-0 fw-semibold">
                         <i class="bi bi-list-ul me-2"></i>
                         Daftar Semua Tanggapan
                     </h5>
+                </div>
+                <div class="col-md-6">
+                    <form method="GET" class="d-flex flex-wrap gap-2 align-items-center justify-content-md-end">
+                        <input type="text" name="q" value="{{ request('q') }}" placeholder="Cari nama, email, pesan" class="form-control form-control-sm" style="max-width: 200px;">
+                        <input type="date" name="date_from" value="{{ request('date_from') }}" class="form-control form-control-sm" style="max-width: 150px;">
+                        <input type="date" name="date_to" value="{{ request('date_to') }}" class="form-control form-control-sm" style="max-width: 150px;">
+                        <select name="priority" class="form-select form-select-sm" style="max-width: 150px;">
+                            <option value="">Semua Prioritas</option>
+                            <option value="segera" {{ request('priority')=='segera' ? 'selected' : '' }}>Segera</option>
+                            <option value="normal" {{ request('priority')=='normal' ? 'selected' : '' }}>Normal</option>
+                        </select>
+                        <button class="btn btn-light btn-sm">Filter</button>
+                    </form>
                 </div>
             </div>
         </div>
@@ -76,16 +89,17 @@
             <table class="table table-hover align-middle mb-0">
                 <thead class="table-light">
                     <tr>
-                        <th class="fw-semibold text-muted">Pengguna</th>
+                        <th class="fw-semibold text-muted ps-4">Pengguna</th>
                         <th class="fw-semibold text-muted">Pesan</th>
+                        <th class="fw-semibold text-muted text-center">Prioritas</th>
                         <th class="fw-semibold text-muted text-center">Status</th>
-                        <th class="fw-semibold text-muted text-center">Aksi</th>
+                        <th class="fw-semibold text-muted text-center pe-4">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
                     @forelse($tanggapans as $index => $t)
                     <tr class="border-bottom animate-row-fade" style="animation-delay: {{ $index * 0.05 }}s">
-                        <td>
+                        <td class="ps-4">
                             <div class="d-flex align-items-center">
                                 <div class="avatar-circle bg-primary text-white me-3">
                                     {{ strtoupper(substr($t->nama, 0, 1)) }}
@@ -103,40 +117,67 @@
                             </div>
                         </td>
                         <td class="text-center">
-                            @if($t->status == 'baru')
-                            <span class="badge bg-warning text-dark fs-7 px-3 py-2 animate-pulse">
-                                <i class="bi bi-clock me-1"></i>Baru
-                            </span>
-                            @elseif($t->status == 'dibaca')
-                            <span class="badge bg-info text-white fs-7 px-3 py-2">
-                                <i class="bi bi-eye me-1"></i>Dibaca
-                            </span>
+                            @php $p = $t->priority ?? 'normal'; @endphp
+                            @if($p == 'segera')
+                                <span class="badge bg-danger text-white">Segera</span>
+                            @elseif($p == 'tinggi')
+                                <span class="badge bg-warning text-dark">Tinggi</span>
+                            @elseif($p == 'medium')
+                                <span class="badge bg-info text-white">Medium</span>
                             @else
-                            <span class="badge bg-success text-white fs-7 px-3 py-2">
-                                <i class="bi bi-check-circle me-1"></i>Selesai
-                            </span>
+                                <span class="badge bg-secondary text-white">Normal</span>
                             @endif
                         </td>
                         <td class="text-center">
+                            @if($t->status == 'baru')
+                                <span class="badge bg-warning text-dark fs-7 px-3 py-2 animate-pulse">
+                                    <i class="bi bi-clock me-1"></i>Baru
+                                </span>
+                            @elseif($t->status == 'dibaca')
+                                <span class="badge bg-info text-white fs-7 px-3 py-2">
+                                    <i class="bi bi-eye me-1"></i>Dibaca
+                                </span>
+                            @else
+                                <span class="badge bg-success text-white fs-7 px-3 py-2">
+                                    <i class="bi bi-check-circle me-1"></i>Selesai
+                                </span>
+                            @endif
+                        </td>
+                        
+                        <td class="text-center pe-4">
                             <div class="d-flex justify-content-center gap-2">
+                                {{-- Tombol Tandai Sudah Dibaca --}}
                                 @if($t->status == 'baru')
-                                <form action="{{ route('tanggapan.read', $t->id) }}" method="POST" class="d-inline">
+                                    <form action="{{ route('tanggapan.read', $t->id) }}" method="POST" class="d-inline m-0">
+                                        @csrf
+                                        @method('PATCH')
+                                        <button type="submit" class="btn btn-primary btn-sm px-3 animate-bounce-hover" 
+                                                data-bs-toggle="tooltip" 
+                                                title="Tandai sebagai sudah dibaca">
+                                            <i class="bi bi-check-lg me-1"></i>Dibaca
+                                        </button>
+                                    </form>
+                                @else
+                                    <span class="text-muted small d-flex align-items-center" style="height: 32px;">
+                                        <i class="bi bi-check-circle text-success me-1"></i>
+                                        Telah Diproses
+                                    </span>
+                                @endif
+
+                                {{-- Tombol Hapus --}}
+                                <form action="{{ route('admin.tanggapan.destroy', $t->id) }}" method="POST" class="d-inline m-0" onsubmit="return confirm('Hapus tanggapan ini?');">
                                     @csrf
-                                    @method('PATCH')
-                                    <button type="submit" class="btn btn-primary btn-sm px-3 animate-bounce-hover" 
-                                            data-bs-toggle="tooltip" title="Tandai sebagai dibaca">
-                                        <i class="bi bi-check-lg me-1"></i>Dibaca
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-outline-danger btn-sm" title="Hapus">
+                                        <i class="bi bi-trash"></i>
                                     </button>
                                 </form>
-                                @else
-                                <span class="text-muted small">Telah Diproses</span>
-                                @endif
                             </div>
                         </td>
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="4" class="text-center py-5">
+                        <td colspan="5" class="text-center py-5">
                             <div class="empty-state animate-fade-in">
                                 <i class="bi bi-inbox display-1 text-muted"></i>
                                 <h4 class="text-muted mt-3">Belum ada tanggapan</h4>
@@ -223,6 +264,7 @@
 .btn {
     border-radius: 8px;
     font-weight: 500;
+    transition: all 0.3s ease;
 }
 
 .badge {
@@ -265,6 +307,7 @@
 
 .animate-bounce-hover:hover {
     transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
 
 .pulse {
@@ -338,6 +381,33 @@
     }
 }
 
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .table-responsive {
+        font-size: 0.875rem;
+    }
+    
+    .avatar-circle {
+        width: 35px;
+        height: 35px;
+        font-size: 0.9rem;
+    }
+    
+    .btn-sm {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.75rem;
+    }
+    
+    .message-preview {
+        max-width: 200px;
+    }
+
+    /* Adjust actions column for mobile */
+    .d-flex.gap-2 {
+        gap: 0.5rem !important;
+    }
+}
+
 /* Staggered animation for table rows */
 .animate-row-fade:nth-child(1) { animation-delay: 0.05s; }
 .animate-row-fade:nth-child(2) { animation-delay: 0.1s; }
@@ -349,6 +419,23 @@
 .animate-row-fade:nth-child(8) { animation-delay: 0.4s; }
 .animate-row-fade:nth-child(9) { animation-delay: 0.45s; }
 .animate-row-fade:nth-child(10) { animation-delay: 0.5s; }
+
+/* Custom styles for action buttons */
+.btn-primary {
+    background: linear-gradient(135deg, #0d6efd, #0a58ca);
+    border: none;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, #0a58ca, #084298);
+    transform: translateY(-1px);
+}
+
+.btn-outline-danger:hover {
+    background-color: #dc3545;
+    border-color: #dc3545;
+    transform: translateY(-1px);
+}
 </style>
 
 <script>
@@ -368,6 +455,14 @@ document.addEventListener('DOMContentLoaded', function() {
         
         card.addEventListener('mouseleave', function() {
             this.style.transform = 'translateY(0) scale(1)';
+        });
+    });
+
+    // Enhanced button interactions
+    const actionButtons = document.querySelectorAll('.btn');
+    actionButtons.forEach(button => {
+        button.addEventListener('mouseenter', function() {
+            this.style.transition = 'all 0.3s ease';
         });
     });
 });

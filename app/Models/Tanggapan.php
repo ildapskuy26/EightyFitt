@@ -15,7 +15,8 @@ class Tanggapan extends Model
         'nama',
         'email',
         'subjek',
-        'pesan',
-        'status',
+    'pesan',
+    'status',
+    'priority',
     ];
 }

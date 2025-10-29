@@ -12,8 +12,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('tanggapan', function (Blueprint $table) {
-            $table->string('email')->after('nama');
-            $table->enum('subjek', ['konsultasi', 'pengaduan', 'saran'])->after('email')->nullable();
+            // Only add columns if they don't already exist (avoid duplicate column errors)
+            if (!Schema::hasColumn('tanggapan', 'email')) {
+                $table->string('email')->after('nama');
+            }
+
+            if (!Schema::hasColumn('tanggapan', 'subjek')) {
+                $table->enum('subjek', ['konsultasi', 'pengaduan', 'saran'])->after('email')->nullable();
+            }
         });
     }
 
@@ -23,7 +29,14 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('tanggapan', function (Blueprint $table) {
-            //
+            // Drop columns only if they exist
+            if (Schema::hasColumn('tanggapan', 'subjek')) {
+                $table->dropColumn('subjek');
+            }
+
+            if (Schema::hasColumn('tanggapan', 'email')) {
+                $table->dropColumn('email');
+            }
         });
     }
 };

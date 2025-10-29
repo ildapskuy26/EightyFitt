@@ -26,15 +26,13 @@
     --text-light: #fff;
     --bg-body: linear-gradient(135deg, #F9F7F0 0%, #F5F3E7 100%);
     --navbar-bg: rgba(245, 243, 231, 0.95);
+    --sidebar-bg: linear-gradient(180deg, #F5F3E7 0%, #E8E4D5 100%); /* KEMBALI KE WARNA CREAM */
     --sidebar-width: 260px;
-    --sidebar-bg: linear-gradient(180deg, #F7EED3 0%, #E9D8A6 100%);
-
     --sidebar-collapsed: 70px;
     /* Warna hijau untuk navbar siswa */
     --green-main: #2E7D32;
     --green-btn: #1B5E20;
   }
-
 
   /* === GLOBAL === */
   body {
@@ -45,32 +43,31 @@
     overflow-x: hidden;
   }
 
-/* === GAYA FONT NAVBAR ADMIN SESUAI GAMBAR === */
-.sidebar-header h5 {
-  font-family: 'Playfair Display', serif !important;
-  font-weight: 700 !important;
-  color: #6B5A42 !important;
-  font-size: 1.5rem !important;
-  letter-spacing: 0.5px;
-}
+  /* === GAYA FONT NAVBAR ADMIN === */
+  .sidebar-header h5 {
+    font-family: 'Playfair Display', serif !important;
+    font-weight: 700 !important;
+    color: var(--accent-dark) !important; /* KEMBALI KE WARNA ASLI */
+    font-size: 1.5rem !important;
+    letter-spacing: 0.5px;
+  }
 
-.sidebar-header p {
-  font-family: 'Montserrat', sans-serif !important;
-  font-weight: 500 !important;
-  color: #8B7355 !important;
-  font-size: 0.9rem !important;
-}
+  .sidebar-header p {
+    font-family: 'Montserrat', sans-serif !important;
+    font-weight: 500 !important;
+    color: var(--accent-color) !important; /* KEMBALI KE WARNA ASLI */
+    font-size: 0.9rem !important;
+  }
 
-.sidebar .nav-link,
-.btn-logout-sidebar,
-.admin-header .page-title,
-.admin-header .user-info,
-.admin-header .btn-logout {
-  font-family: 'Montserrat', sans-serif !important;
-  font-weight: 600 !important;
-  color: #3b2f23 !important;
-}
-
+  .sidebar .nav-link,
+  .btn-logout-sidebar,
+  .admin-header .page-title,
+  .admin-header .user-info,
+  .admin-header .btn-logout {
+    font-family: 'Montserrat', sans-serif !important;
+    font-weight: 600 !important;
+    color: var(--text-color) !important; /* KEMBALI KE WARNA ASLI */
+  }
 
   /* === SIDEBAR DENGAN ANIMASI === */
   .sidebar {
@@ -79,7 +76,7 @@
     left: 0;
     height: 100vh;
     width: var(--sidebar-width);
-    background: var(--sidebar-bg);
+    background: var(--sidebar-bg); /* BACKGROUND CREAM */
     color: var(--text-color);
     padding-top: 20px;
     box-shadow: 3px 0 15px rgba(0,0,0,0.08);
@@ -155,7 +152,7 @@
     padding: 14px 20px;
     margin: 5px 15px;
     border-radius: 10px;
-    font-weight: 500;
+    font-weight: 600; /* TETAP TEBAL */
     display: flex;
     align-items: center;
     gap: 12px;
@@ -203,6 +200,7 @@
     background: rgba(139, 115, 85, 0.1);
     transform: translateX(8px);
     color: var(--accent-dark);
+    font-weight: 700; /* TETAP TEBAL */
   }
   
   .sidebar.collapsed .nav-link:hover,
@@ -210,8 +208,8 @@
     transform: translateX(5px);
   }
 
-  /* Toggle Button */
-  .sidebar-toggle {
+  /* HAPUS TOGGLE BUTTON STYLE */
+  /* .sidebar-toggle {
     position: absolute;
     top: 25px;
     right: -15px;
@@ -238,7 +236,7 @@
 
   .sidebar.collapsed .sidebar-toggle i {
     transform: rotate(180deg);
-  }
+  } */
 
   /* Badge Notifikasi */
   .badge {
@@ -260,8 +258,6 @@
     padding: 0;
     margin: 0;
   }
-
-  
 
   /* Menu Items Container dengan Scroll */
   .sidebar-menu {
@@ -507,7 +503,6 @@
   font-weight: 700 !important;
 }
 
-
   /* === RESPONSIVE STYLES === */
   @media (max-width: 992px) {
     .sidebar {
@@ -649,18 +644,18 @@
 
   {{-- === SIDEBAR UNTUK ADMIN & PETUGAS === --}}
 @if(in_array($role, ['admin','petugas']))
-<div class="sidebar d-flex flex-column" style="background-color: #1c4f33" id="adminSidebar">
+<div class="sidebar d-flex flex-column" id="adminSidebar">
   <div class="sidebar-header" id="sidebarLogo">
     <img src="{{ asset('images/logouks.png') }}" alt="Logo">
     <h5>UKS SMKN 8 Jakarta</h5>
     <p>Unit Kesehatan Sekolah</p>
   </div>
 
-  
+  <!-- TOMBOL TOGGLE DIHAPUS -->
 
   <div class="sidebar-menu">
     <ul class="nav flex-column">
-      @if($role === 'admin')
+  @if($role === 'admin')
       <li><a class="nav-link {{ request()->is('admin/dashboard') ? 'active' : '' }}" href="{{ route('admin.dashboard') }}">
         <i class="fas fa-chart-pie"></i><span>Dashboard</span></a></li>
       <li><a class="nav-link" href="{{ route('kunjungan.index') }}"><i class="fas fa-notes-medical"></i><span>Kunjungan</span></a></li>
@@ -668,15 +663,14 @@
       <li><a class="nav-link" href="{{ route('berita.index') }}"><i class="fas fa-bullhorn"></i><span>Berita</span></a></li>
       <li><a class="nav-link" href="{{ route('petugas.index') }}"><i class="fas fa-user-shield"></i><span>Kelola User</span></a></li>
       <li><a class="nav-link" href="{{ route('pembukuan.index') }}"><i class="fas fa-book-medical"></i><span>Pembukuan</span></a></li>
-      <li><a class="nav-link" href="{{ route('admin.tanggapan.index') }}"><i class="fas fa-comment-dots"></i><span>Tanggapan</span></a></li>
-      @elseif($role === 'petugas')
+  <li><a class="nav-link" href="{{ route('admin.tanggapan') }}"><i class="fas fa-comment-dots"></i><span>Tanggapan</span></a></li>
+  @elseif($role === 'petugas')
       <li><a class="nav-link {{ request()->is('petugas/dashboard') ? 'active' : '' }}" href="{{ route('petugas.dashboard') }}">
         <i class="fas fa-chart-pie"></i><span>Dashboard</span></a></li>
       <li><a class="nav-link" href="{{ route('kunjungan.index') }}"><i class="fas fa-notes-medical"></i><span>Input Kunjungan</span></a></li>
       <li><a class="nav-link" href="{{ route('obat.index') }}"><i class="fas fa-capsules"></i><span>Inventaris Obat</span></a></li>
       <li><a class="nav-link" href="{{ route('berita.index') }}"><i class="fas fa-bullhorn"></i><span>Berita</span></a></li>
       <li><a class="nav-link" href="{{ route('pembukuan.index') }}"><i class="fas fa-book-medical"></i><span>Pembukuan</span></a></li>
-      <li><a class="nav-link" href="{{ route('admin.tanggapan.index') }}"><i class="fas fa-comment-dots"></i><span>Tanggapan</span></a></li>
       @endif
     </ul>
   </div>
@@ -762,15 +756,18 @@
     <i class="bi bi-list" style="font-size: 1.5rem; color: var(--green-main);"></i>
   </button>
   
+  <div class="collapse navbar-collapse justify-content-center" id="guestNavbar">
+    <!-- Menu untuk guest bisa ditambahkan di sini jika diperlukan -->
+  </div>
   
-    <div class="d-flex align-items-center gap-2">
-      <a href="{{ route('login') }}" class="btn btn-login">
-        <i class="bi bi-box-arrow-in-right me-1"></i>
-        Login
-      </a>
-    </div>
+  <div class="d-flex align-items-center gap-2">
+    <a href="{{ route('login') }}" class="btn btn-login">
+      <i class="bi bi-box-arrow-in-right me-1"></i>
+      Login
+    </a>
   </div>
 </nav>
+
   <div class="container mt-5 pt-5">
     @yield('content')
   </div>
@@ -780,30 +777,24 @@
 <script>
 document.addEventListener('DOMContentLoaded', function() {
   const sidebar = document.getElementById('adminSidebar');
-  const toggleButton = document.getElementById('sidebarToggle');
   const sidebarLogo = document.getElementById('sidebarLogo');
   
-  const isCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
-  
-  if (isCollapsed) {
-    sidebar.classList.add('collapsed');
+  // Periksa elemen ada sebelum digunakan
+  if (sidebar && sidebarLogo) {
+    const isCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
+    
+    if (isCollapsed) {
+      sidebar.classList.add('collapsed');
+    }
+    
+    // Toggle sidebar hanya dengan klik logo
+    sidebarLogo.addEventListener('click', function() {
+      sidebar.classList.toggle('collapsed');
+      
+      const isNowCollapsed = sidebar.classList.contains('collapsed');
+      localStorage.setItem('sidebarCollapsed', isNowCollapsed);
+    });
   }
-  
-  // Toggle dengan tombol
-  toggleButton.addEventListener('click', function() {
-    sidebar.classList.toggle('collapsed');
-    
-    const isNowCollapsed = sidebar.classList.contains('collapsed');
-    localStorage.setItem('sidebarCollapsed', isNowCollapsed);
-  });
-  
-  // Toggle dengan klik logo
-  sidebarLogo.addEventListener('click', function() {
-    sidebar.classList.toggle('collapsed');
-    
-    const isNowCollapsed = sidebar.classList.contains('collapsed');
-    localStorage.setItem('sidebarCollapsed', isNowCollapsed);
-  });
 });
 </script>
 </body> 

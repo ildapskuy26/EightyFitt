@@ -932,6 +932,9 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-lg-8">
+                @if(session('success'))
+                    <div class="alert alert-success">{{ session('success') }}</div>
+                @endif
                 <div class="hours-card animate-fade-in-up">
                     <i class="bi bi-clock-history hours-icon"></i>
                     <h2 class="hours-title">Jam Operasional UKS</h2>
@@ -1029,13 +1032,15 @@
                         
                         <div class="form-group">
                             <label class="form-label">Subjek Pesan</label>
-                            <select name="subjek" class="form-control" required>
+                            <select id="subjekSelect" name="subjek" class="form-control" required>
                                 <option value="" selected disabled>Pilih subjek pesan</option>
                                 <option value="konsultasi">Konsultasi Kesehatan</option>
                                 <option value="pengaduan">Pengaduan Layanan</option>
                                 <option value="saran">Saran & Kritik</option>
                                 <option value="lainnya">Lainnya</option>
                             </select>
+                            <input type="hidden" id="priorityInput" name="priority" value="normal">
+                            <div class="form-text small">Jika memilih "Konsultasi Kesehatan" prioritas otomatis menjadi <strong>Segera</strong>.</div>
                         </div>
 
                         <div class="form-group">
@@ -1545,5 +1550,24 @@ function showMedicalStaffModal() {
     }
     
     
+</script>
+<script>
+    // Map subjek -> priority on client side for UX
+    document.addEventListener('DOMContentLoaded', function() {
+        const subjekSelect = document.getElementById('subjekSelect');
+        const priorityInput = document.getElementById('priorityInput');
+        if (subjekSelect && priorityInput) {
+            subjekSelect.addEventListener('change', function() {
+                const v = this.value;
+                if (v === 'konsultasi') {
+                    priorityInput.value = 'segera';
+                } else if (v === 'pengaduan' || v === 'saran' || v === 'lainnya') {
+                    priorityInput.value = 'normal';
+                } else {
+                    priorityInput.value = 'normal';
+                }
+            });
+        }
+    });
 </script>
 @endsection
