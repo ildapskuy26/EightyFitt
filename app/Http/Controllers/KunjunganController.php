@@ -9,6 +9,7 @@ use App\Models\Kunjungan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class KunjunganController extends Controller
 {
@@ -92,20 +93,24 @@ class KunjunganController extends Controller
     /**
      * Simpan data kunjungan baru.
      */
-    public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'nis'              => 'required|exists:siswa,nis',
-            'waktu_kedatangan' => 'required|date',
-            'waktu_keluar'     => 'nullable|date|after_or_equal:waktu_kedatangan',
-            'keluhan'          => 'nullable|string',
-            'obat_id'          => 'nullable|exists:obat,id',
-            'diagnosis'        => 'required|string|max:255',
-            'tempat'           => 'required|in:UKS,Upacara',
-        ]);
+public function store(Request $request)
+{
+    $validated = $request->validate([
+        'nis'              => 'required|exists:siswa,nis',
+        'waktu_kedatangan' => 'required|date',
+        'waktu_keluar'     => 'nullable|date|after_or_equal:waktu_kedatangan',
+        'keluhan'          => 'nullable|string',
+        'obat_id'          => 'nullable|exists:obat,id',
+        'diagnosis'        => 'required|string|max:255',
+        'tempat'           => 'required|in:UKS,Upacara',
+    ]);
 
-        $siswa = Siswa::where('nis', $validated['nis'])->firstOrFail();
+    $siswa = Siswa::where('nis', $validated['nis'])->firstOrFail();
 
+    // Start transaction
+    DB::beginTransaction();
+    try {
+        // Create kunjungan
         $kunjungan = Kunjungan::create([
             'nis'              => $siswa->nis,
             'nama'             => $siswa->nama,
@@ -117,28 +122,49 @@ class KunjunganController extends Controller
             'obat_id'          => $validated['obat_id'] ?? null,
             'diagnosis'        => $validated['diagnosis'],
             'tempat'           => $validated['tempat'],
-             'id_petugas' => auth()->id(), // otomatis isi ID user yang logi
+            'id_petugas'       => auth()->id(),
         ]);
 
-        // Hitung kunjungan minggu ini
-        $kunjunganCount = Kunjungan::where('nis', $siswa->nis)
-            ->whereBetween('waktu_kedatangan', [now()->startOfWeek(), now()->endOfWeek()])
-            ->count();
-
-        if ($kunjunganCount >= 5) {
-            Session::flash('alert', [
-                'type' => 'danger',
-                'message' => "⚠️ Siswa sudah berkunjung 5 kali minggu ini. Perlu dirujuk ke pusat layanan kesehatan!"
-            ]);
-        } elseif ($kunjunganCount >= 3) {
-            Session::flash('alert', [
-                'type' => 'warning',
-                'message' => "⚠️ Siswa sudah berkunjung 3 kali minggu ini."
-            ]);
+        // If obat is given, update stock
+        if ($validated['obat_id']) {
+            $obat = Obat::findOrFail($validated['obat_id']);
+            if ($obat->stock > 0) {
+                $obat->update([
+                    'stock' => $obat->stock - 1,
+                    'stok_terpakai' => $obat->stok_terpakai + 1
+                ]);
+            } else {
+                throw new \Exception('Stok obat habis!');
+            }
         }
 
-        return redirect()->route('kunjungan.index')->with('success', 'Data kunjungan berhasil ditambahkan.');
+        DB::commit();
+    } catch (\Exception $e) {
+        DB::rollback();
+        return redirect()->back()
+            ->withInput()
+            ->with('error', 'Gagal menyimpan kunjungan: ' . $e->getMessage());
     }
+
+    // Check kunjungan count
+    $kunjunganCount = Kunjungan::where('nis', $siswa->nis)
+        ->whereBetween('waktu_kedatangan', [now()->startOfWeek(), now()->endOfWeek()])
+        ->count();
+
+    if ($kunjunganCount >= 5) {
+        Session::flash('alert', [
+            'type' => 'danger',
+            'message' => "⚠️ Siswa sudah berkunjung 5 kali minggu ini. Perlu dirujuk ke pusat layanan kesehatan!"
+        ]);
+    } elseif ($kunjunganCount >= 3) {
+        Session::flash('alert', [
+            'type' => 'warning',
+            'message' => "⚠️ Siswa sudah berkunjung 3 kali minggu ini."
+        ]);
+    }
+
+    return redirect()->route('kunjungan.index')->with('success', 'Data kunjungan berhasil ditambahkan.');
+}
 
     /**
      * Tampilkan detail kunjungan.

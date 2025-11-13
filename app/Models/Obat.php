@@ -22,6 +22,10 @@ class Obat extends Model
         'stok_terpakai',
     ];
 
+    protected $attributes = [
+        'stok_terpakai' => 0,
+    ];
+
     // Relasi ke Kunjungan
     public function kunjungan()
     {
@@ -32,4 +36,5 @@ class Obat extends Model
     {
         return $this->stock - $this->stok_terpakai;
     }
+
 }

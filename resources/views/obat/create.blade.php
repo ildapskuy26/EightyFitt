@@ -73,12 +73,7 @@
                         value="{{ old('stock') }}" min="0" required>
                 </div>
 
-                <div class="col-md-4 mb-3">
-                    <label class="form-label fw-semibold">Stok Terpakai</label>
-                    <input type="number" name="stok_terpakai" class="form-control form-control-lg rounded-3 shadow-sm"
-                        value="{{ old('stok_terpakai', 0) }}" min="0" required>
-                </div>
-            </div>
+                
 
             {{-- Kadar / Ukuran --}}
             <div class="mb-3">
